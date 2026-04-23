@@ -4,6 +4,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 
 > **FarmCom** bridges the severe farmer-to-extension-worker gap in Uganda. It is an offline-first, hyper-localized community platform where farmers can crowdsource knowledge, access instant AI-driven crop diagnostics, and consult verified agricultural experts via mobile money micro-transactions.
 
@@ -91,3 +92,36 @@ FarmCom is starting as a community, but it is built to become the central operat
    ```bash
    git clone [https://github.com/asiimwe-dev/FarmCom.git](https://github.com/asiimwe-dev/FarmCom.git)
    cd FarmCom
+
+2. **Install Dependencies**
+   ```bash
+   flutter pub get
+
+3. **Configure Environment Variables**
+   *Create a .env file in the root directory:*
+   ```bash
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_ANON_KEY=your_anon_key
+   FLUTTERWAVE_PUBLIC_KEY=your_fw_key
+
+4. **Run the application:**
+   ```bash
+   flutter run
+
+---
+
+## Security & Data Integrity
+Sync Conflict Resolution: Implements a "Last Write Wins" strategy with manual override for community forum threads to prevent data loss during multi-device syncing.
+
+Phone Auth: Secure OTP-based authentication via Supabase for mobile-first user onboarding.
+
+## Contributing
+We welcome contributions from the developer community, especially regarding local language NLP and agricultural data modeling. Please see CONTRIBUTING.md for details.
+
+## License
+Copyright 2026 FarmCom Authors.
+
+Licensed under the Apache License, Version 2.0; you may not use this file except in compliance with the License. You may obtain a copy of the License at:
+[http://www.apache.org/licenses/LICENSE-2.0]
+
+   
