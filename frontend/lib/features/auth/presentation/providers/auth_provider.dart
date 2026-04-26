@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/core/domain/entities/user.dart';
 import 'package:farmcom/core/domain/exceptions/app_exception.dart';
@@ -90,6 +91,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = state.copyWith(user: user, isLoading: false);
       }
     });
+    
+    // Auto-login demo user in debug mode for easier testing
+    if (kDebugMode) {
+      _loadDemoUser();
+    }
+  }
+  
+  /// Load demo user for development/testing (debug mode only)
+  void _loadDemoUser() {
+    final demoUser = User(
+      id: 'demo_user_001',
+      phone: '+256701234567',
+      name: 'Test Farmer',
+      createdAt: DateTime.now(),
+      lastSignIn: DateTime.now(),
+      isLoggedIn: true,
+      region: 'Central Uganda',
+      interests: ['Coffee', 'Maize'],
+    );
+    state = state.copyWith(user: demoUser);
   }
 
   Future<void> sendOTP(String phone) async {
