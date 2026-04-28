@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/core/constants/app_strings.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_text_field.dart';
 import '../providers/auth_provider.dart';
 
 class OTPPage extends ConsumerStatefulWidget {
@@ -40,11 +42,11 @@ class _OTPPageState extends ConsumerState<OTPPage> {
     }
 
     ref.read(authProvider.notifier).sendOTP(phone);
-    
+
     // Move to OTP page
     _pageController.nextPage(
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutQuart,
     );
   }
 
@@ -67,15 +69,45 @@ class _OTPPageState extends ConsumerState<OTPPage> {
     final authState = ref.watch(authProvider);
 
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
+      backgroundColor: AppColors.background,
+      body: Stack(
         children: [
-          // Phone input page
-          _buildPhonePage(context, authState),
+          // Background Decorative Elements
+          Positioned(
+            top: -100,
+            right: -100,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primarySoft.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -50,
+            left: -50,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondarySoft.withValues(alpha: 0.3),
+              ),
+            ),
+          ),
           
-          // OTP verification page
-          _buildOTPPage(context, authState),
+          SafeArea(
+            child: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _buildPhonePage(context, authState),
+                _buildOTPPage(context, authState),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -83,151 +115,179 @@ class _OTPPageState extends ConsumerState<OTPPage> {
 
   Widget _buildPhonePage(BuildContext context, AuthState authState) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 80),
-            Text(
-              AppStrings.enterPhone,
-              style: Theme.of(context).textTheme.headlineLarge,
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 60),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(20),
             ),
-            SizedBox(height: 16),
-            Text(
-              'We\'ll send you a verification code',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.grey600,
-              ),
+            child: const Icon(
+              Icons.agriculture_rounded,
+              size: 40,
+              color: AppColors.primary,
             ),
-            SizedBox(height: 32),
-            TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                hintText: AppStrings.phoneHint,
-                prefixIcon: Icon(Icons.phone),
-                enabled: !authState.isLoading,
-              ),
-            ),
-            SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: authState.isLoading ? null : _sendOTP,
-                child: authState.isLoading
-                    ? SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation(AppColors.white),
-                        ),
-                      )
-                    : Text(AppStrings.sendOTP),
-              ),
-            ),
-            if (authState.error case final error?) ...[
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.error.withAlpha(20),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    error.message,
-                    style: TextStyle(color: AppColors.error),
-                  ),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Welcome to FarmCom',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.grey900,
                 ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Empowering farmers through community and technology.',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppColors.grey600,
+                  height: 1.5,
+                ),
+          ),
+          const SizedBox(height: 48),
+          FarmComTextField(
+            controller: phoneController,
+            labelText: AppStrings.enterPhone,
+            hintText: AppStrings.phoneHint,
+            prefixIcon: const Icon(Icons.phone_iphone_rounded, color: AppColors.primary),
+            keyboardType: TextInputType.phone,
+            enabled: !authState.isLoading,
+          ),
+          const SizedBox(height: 32),
+          FarmComButton(
+            label: AppStrings.sendOTP,
+            onPressed: _sendOTP,
+            isLoading: authState.isLoading,
+          ),
+          const SizedBox(height: 24),
+          Center(
+            child: Text(
+              'By continuing, you agree to our Terms and Conditions',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.grey500,
               ),
-            ],
+            ),
+          ),
+          if (authState.error case final error?) ...[
+            _buildErrorWidget(error.message),
           ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildOTPPage(BuildContext context, AuthState authState) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 80),
-            GestureDetector(
-              onTap: () => _pageController.previousPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              ),
-              child: Icon(Icons.arrow_back),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          IconButton(
+            onPressed: () => _pageController.previousPage(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutQuart,
             ),
-            SizedBox(height: 24),
-            Text(
-              AppStrings.verifyOTP,
-              style: Theme.of(context).textTheme.headlineLarge,
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            style: IconButton.styleFrom(
+              backgroundColor: AppColors.grey100,
+              padding: const EdgeInsets.all(12),
             ),
-            SizedBox(height: 16),
-            Text(
-              'Enter the 6-digit code sent to ${phoneController.text}',
+          ),
+          const SizedBox(height: 40),
+          Text(
+            AppStrings.verifyOTP,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.grey900,
+                ),
+          ),
+          const SizedBox(height: 12),
+          RichText(
+            text: TextSpan(
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.grey600,
-              ),
-            ),
-            SizedBox(height: 32),
-            TextField(
-              controller: otpController,
-              keyboardType: TextInputType.number,
-              maxLength: 6,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineMedium,
-              decoration: InputDecoration(
-                hintText: '000000',
-                enabled: !authState.isLoading,
-                counterText: '',
-              ),
-            ),
-            SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: authState.isLoading ? null : _verifyOTP,
-                child: authState.isLoading
-                    ? SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation(AppColors.white),
-                        ),
-                      )
-                    : Text(AppStrings.confirm),
-              ),
-            ),
-            if (authState.error case final error?) ...[
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.error.withAlpha(20),
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.grey600,
+                    height: 1.5,
                   ),
-                  child: Text(
-                    error.message,
-                    style: TextStyle(color: AppColors.error),
+              children: [
+                const TextSpan(text: 'We\'ve sent a 6-digit verification code to '),
+                TextSpan(
+                  text: phoneController.text,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
                   ),
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 48),
+          FarmComTextField(
+            controller: otpController,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 8,
+              color: AppColors.primary,
+            ),
+            keyboardType: TextInputType.number,
+            maxLength: 6,
+            enabled: !authState.isLoading,
+          ),
+          const SizedBox(height: 32),
+          FarmComButton(
+            label: AppStrings.confirm,
+            onPressed: _verifyOTP,
+            isLoading: authState.isLoading,
+          ),
+          const SizedBox(height: 24),
+          Center(
+            child: TextButton(
+              onPressed: authState.isLoading ? null : () {
+                // Resend logic
+              },
+              child: const Text(
+                'Didn\'t receive the code? Resend',
+                style: TextStyle(fontWeight: FontWeight.w700),
               ),
-            ],
+            ),
+          ),
+          if (authState.error case final error?) ...[
+            _buildErrorWidget(error.message),
           ],
-        ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget(String message) {
+    return Container(
+      margin: const EdgeInsets.only(top: 24),
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.error.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline_rounded, color: AppColors.error),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(color: AppColors.error, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
       ),
     );
   }

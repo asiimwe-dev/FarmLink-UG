@@ -5,7 +5,6 @@ class MarketPulseList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // For MVP: Static data with buy and sell prices
     final prices = [
       {
         'crop': 'Coffee (Robusta)',
@@ -28,29 +27,21 @@ class MarketPulseList extends ConsumerWidget {
         'unit': 'kg',
         'trend': 'down'
       },
-      {
-        'crop': 'Beans',
-        'buyPrice': '2,800',
-        'sellPrice': '3,100',
-        'unit': 'kg',
-        'trend': 'up'
-      },
-      {
-        'crop': 'Banana',
-        'buyPrice': '600',
-        'sellPrice': '800',
-        'unit': 'bunch',
-        'trend': 'stable'
-      },
     ];
 
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final item = prices[index];
-          return _MarketPriceLine(item: item);
-        },
-        childCount: prices.length,
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final item = prices[index];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _MarketPriceLine(item: item),
+            );
+          },
+          childCount: prices.length,
+        ),
       ),
     );
   }
@@ -64,94 +55,73 @@ class _MarketPriceLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trend = item['trend']!;
-    final isUp = trend == 'up';
-    final isDown = trend == 'down';
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
+    
+    return FarmComCard(
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   item['crop']!,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'Updated: 08:00 AM',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'BUY',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.blue.shade700,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                Text(
-                  item['buyPrice']!,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.blue,
-                  ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time_rounded, size: 12, color: AppColors.grey500),
+                    const SizedBox(width: 4),
+                    const Text(
+                      'Updated 2h ago',
+                      style: TextStyle(
+                        color: AppColors.grey500,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: _TrendIcon(trend: trend),
+          _buildPriceColumn('BUY', item['buyPrice']!, AppColors.tertiary),
+          const SizedBox(width: 12),
+          _TrendIndicator(trend: trend),
+          const SizedBox(width: 12),
+          _buildPriceColumn('SELL', item['sellPrice']!, AppColors.success),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceColumn(String label, String price, Color color) {
+    return Expanded(
+      flex: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              color: AppColors.grey500,
+              letterSpacing: 0.5,
+            ),
           ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'SELL',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.green.shade700,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                Text(
-                  item['sellPrice']!,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.green,
-                  ),
-                ),
-              ],
+          const SizedBox(height: 2),
+          Text(
+            'Shs $price',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: color,
             ),
           ),
         ],
@@ -160,29 +130,40 @@ class _MarketPriceLine extends StatelessWidget {
   }
 }
 
-class _TrendIcon extends StatelessWidget {
+class _TrendIndicator extends StatelessWidget {
   final String trend;
-  const _TrendIcon({required this.trend});
+  const _TrendIndicator({required this.trend});
 
   @override
   Widget build(BuildContext context) {
     IconData icon;
     Color color;
+    Color bg;
 
     switch (trend) {
       case 'up':
-        icon = Icons.arrow_upward;
-        color = Colors.green;
+        icon = Icons.trending_up_rounded;
+        color = AppColors.success;
+        bg = AppColors.success.withValues(alpha: 0.1);
         break;
       case 'down':
-        icon = Icons.arrow_downward;
-        color = Colors.red;
+        icon = Icons.trending_down_rounded;
+        color = AppColors.error;
+        bg = AppColors.error.withValues(alpha: 0.1);
         break;
       default:
-        icon = Icons.remove;
-        color = Colors.orange;
+        icon = Icons.trending_flat_rounded;
+        color = AppColors.warning;
+        bg = AppColors.warning.withValues(alpha: 0.1);
     }
 
-    return Icon(icon, color: color, size: 20);
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(icon, color: color, size: 18),
+    );
   }
 }

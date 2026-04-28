@@ -6,11 +6,19 @@ class AppColors {
   static const Color primary = Color(0xFF2E7D32);
   static const Color primaryLight = Color(0xFF4CAF50);
   static const Color primaryDark = Color(0xFF1B5E20);
+  static const Color primarySoft = Color(0xFFE8F5E9);
 
   // Secondary: Soil Orange (Market Pulse)
   static const Color secondary = Color(0xFFF57C00);
   static const Color secondaryLight = Color(0xFFFF9800);
   static const Color secondaryDark = Color(0xFFE65100);
+  static const Color secondarySoft = Color(0xFFFFF3E0);
+
+  // Tertiary: Water Blue (Diagnostics/Expert)
+  static const Color tertiary = Color(0xFF0277BD);
+  static const Color tertiaryLight = Color(0xFF039BE5);
+  static const Color tertiaryDark = Color(0xFF01579B);
+  static const Color tertiarySoft = Color(0xFFE1F5FE);
 
   // Status Colors
   static const Color success = Color(0xFF2E7D32);
@@ -38,7 +46,12 @@ class AppColors {
   static const Color background = Color(0xFFFFFFFF);
   static const Color divider = Color(0xFFEEEEEE);
 
+  // Special UI Colors
+  static const Color glassStart = Color(0x1FFFFFFF);
+  static const Color glassEnd = Color(0x0FFFFFFF);
+
   // Shadows
   static const Color shadow = Color(0x1F000000);
   static const Color shadowLight = Color(0x0F000000);
+  static const Color primaryShadow = Color(0x402E7D32);
 }

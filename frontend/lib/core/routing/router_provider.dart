@@ -8,6 +8,8 @@ import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/community/presentation/pages/community_page.dart';
 import '../../features/profile/presentation/pages/user_profile_page.dart';
+import '../../features/field_guide/presentation/pages/field_guide_page.dart';
+import '../../features/diagnostics/presentation/pages/camera_diagnostic_page.dart';
 
 // Router provider
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -67,10 +69,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: AppRoutes.fieldGuide,
-                builder: (context, state) => Scaffold(
-                  appBar: AppBar(title: Text('Field Guide')),
-                  body: Center(child: Text('Field Guide Screen')),
-                ),
+                builder: (context, state) => const FieldGuidePage(),
               ),
             ],
           ),
@@ -90,9 +89,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       // Diagnostics (camera) route
       GoRoute(
         path: AppRoutes.diagnostics,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Camera Screen')),
-        ),
+        builder: (context, state) => const CameraDiagnosticPage(),
       ),
     ],
   );

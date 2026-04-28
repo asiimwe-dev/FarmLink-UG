@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
 
 class CameraDiagnosticPage extends StatefulWidget {
   const CameraDiagnosticPage({super.key});
@@ -67,68 +70,125 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
     });
 
     if (mounted) {
-      // Show results (simulated)
       _showAnalysisResults();
     }
   }
 
   void _showAnalysisResults() {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Disease Analysis'),
-        content: Column(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Analysis Result:',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Leaf Rust (Puccinia triticina)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF2E7D32),
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.grey200,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-            const Text(
-              'Confidence: 87%',
-              style: TextStyle(color: Colors.grey),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 24),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'Analysis Complete',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.grey900),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             const Text(
-              'Recommended Actions:',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              'Identified Issue:',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.grey500),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Coffee Leaf Rust (Puccinia triticina)',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.primary),
             ),
             const SizedBox(height: 8),
-            const Text('• Apply fungicide immediately'),
-            const Text('• Ensure proper drainage'),
-            const Text('• Increase air circulation'),
-            const Text('• Monitor neighboring plants'),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.primarySoft,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Text(
+                'Confidence: 87%',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.primaryDark),
+              ),
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Recommended Treatment:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.grey900),
+            ),
+            const SizedBox(height: 12),
+            _buildRecommendationItem('Apply approved copper-based fungicide'),
+            _buildRecommendationItem('Prune affected leaves and destroy them'),
+            _buildRecommendationItem('Ensure proper plant spacing for air flow'),
+            _buildRecommendationItem('Monitor soil moisture levels'),
+            const SizedBox(height: 40),
+            FarmComButton(
+              label: 'Save to Farm Records',
+              onPressed: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Diagnosis saved successfully!')),
+                );
+              },
+              icon: Icons.save_rounded,
+            ),
+            const SizedBox(height: 12),
+            FarmComButton(
+              label: 'Talk to Expert',
+              variant: FarmComButtonVariant.outline,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icons.support_agent_rounded,
+            ),
+            const SizedBox(height: 20),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text('Close'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Recommendation saved to your farm records'),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2E7D32),
+      ),
+    );
+  }
+
+  Widget _buildRecommendationItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.arrow_right_rounded, color: AppColors.primary),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.grey700),
             ),
-            child: const Text('Save Result'),
           ),
         ],
       ),
@@ -138,180 +198,144 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.grey50,
       appBar: AppBar(
-        title: const Text('Crop Diagnostics'),
-        backgroundColor: const Color(0xFF2E7D32),
-        foregroundColor: Colors.white,
-        centerTitle: true,
+        title: const Text('Crop Diagnostics', style: TextStyle(fontWeight: FontWeight.w900)),
+        backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Preview Section
             if (_selectedImage != null)
-              Container(
-                width: double.infinity,
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: const Color(0xFF2E7D32).withValues(alpha: 0.3),
-                  ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.file(
-                    File(_selectedImage!.path),
-                    fit: BoxFit.cover,
+              FarmComCard(
+                padding: EdgeInsets.zero,
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.file(
+                      File(_selectedImage!.path),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               )
             else
-              Container(
-                width: double.infinity,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.grey.shade300,
-                    width: 2,
+              FarmComCard(
+                padding: const EdgeInsets.all(40),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: AppColors.primarySoft,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.camera_alt_rounded, size: 64, color: AppColors.primary),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Take a photo of the affected crop',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.grey900),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'AI will identify diseases and provide remedies',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 13, color: AppColors.grey500, fontWeight: FontWeight.w500),
+                      ),
+                    ],
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.image_not_supported,
-                      size: 64,
-                      color: Colors.grey.shade400,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'No image selected',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
               ),
-            const SizedBox(height: 24),
-
-            // Action Buttons
+            const SizedBox(height: 32),
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: FarmComButton(
+                    label: 'Take Photo',
                     onPressed: _isAnalyzing ? null : _captureImage,
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Take Photo'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2E7D32),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
+                    icon: Icons.camera_rounded,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
-                  child: ElevatedButton.icon(
+                  child: FarmComButton(
+                    label: 'Gallery',
+                    variant: FarmComButtonVariant.outline,
                     onPressed: _isAnalyzing ? null : _pickImage,
-                    icon: const Icon(Icons.photo_library),
-                    label: const Text('Pick Photo'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey.shade600,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
+                    icon: Icons.photo_library_rounded,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-
-            // Analysis Status
-            if (_isAnalyzing)
+            if (_isAnalyzing) ...[
+              const SizedBox(height: 32),
               Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E7D32).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: const Color(0xFF2E7D32).withValues(alpha: 0.3),
-                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
                 ),
-                child: Column(
+
+                child: const Column(
                   children: [
-                    const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFF2E7D32),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
+                    CircularProgressIndicator(strokeWidth: 3),
+                    SizedBox(height: 16),
                     Text(
-                      'Analyzing image...',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      'AI is analyzing your crop...',
+                      style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.primary),
                     ),
                   ],
                 ),
               ),
-
-            const SizedBox(height: 24),
-
-            // Information Section
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.blue.shade200,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.info, color: Colors.blue),
-                      SizedBox(width: 8),
-                      Text(
-                        'How to use',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'For best results:\n'
-                    '• Capture the affected leaf clearly\n'
-                    '• Ensure good lighting\n'
-                    '• Keep the leaf in focus\n'
-                    '• Capture from multiple angles if possible',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade700,
-                      height: 1.6,
-                    ),
-                  ),
-                ],
-              ),
+            ],
+            const SizedBox(height: 40),
+            const Text(
+              'Diagnostic Tips',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.grey900),
             ),
+            const SizedBox(height: 16),
+            _buildTipItem(Icons.light_mode_rounded, 'Ensure good natural lighting'),
+            _buildTipItem(Icons.center_focus_strong_rounded, 'Keep the affected part in center focus'),
+            _buildTipItem(Icons.photo_filter_rounded, 'Avoid using filters or digital zoom'),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTipItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.tertiarySoft,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: AppColors.tertiary, size: 18),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.grey700),
+            ),
+          ),
+        ],
       ),
     );
   }

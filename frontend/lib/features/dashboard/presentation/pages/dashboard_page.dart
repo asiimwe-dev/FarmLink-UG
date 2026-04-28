@@ -3,184 +3,191 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/core/infrastructure/connectivity/connectivity_provider.dart';
 import 'package:farmcom/features/diagnostics/presentation/pages/camera_diagnostic_page.dart';
 import 'package:farmcom/features/ai_chat/presentation/pages/ai_chat_page.dart';
+import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
 
 part '../widgets/niche_communities_list.dart';
 part '../widgets/ai_quick_scan_button.dart';
 part '../widgets/market_pulse_list.dart';
 
 class DashboardPage extends ConsumerWidget {
-  const DashboardPage({super.key}) : super();
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      backgroundColor: AppColors.grey50,
       body: CustomScrollView(
         slivers: [
-          // Responsive Green Header with SliverAppBar
+          // Modern Header with Gradient and Pulse
           SliverAppBar(
-            expandedHeight: 120,
+            expandedHeight: 180,
             floating: false,
-            pinned: false,
-            backgroundColor: const Color(0xFF2E7D32),
+            pinned: true,
+            elevation: 0,
+            stretch: true,
+            backgroundColor: AppColors.primary,
             flexibleSpace: FlexibleSpaceBar(
-              background: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'FarmCom',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Consumer(
-                              builder: (context, ref, _) {
-                                final isOnline =
-                                    ref.watch(isOnlineProvider);
-                                return Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (isOnline) ...[
-                                      _buildPulseIcon(),
-                                      const SizedBox(width: 4),
-                                      const Text(
-                                        'Live',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ] else ...[
-                                      const Icon(
-                                        Icons.signal_wifi_off,
-                                        size: 12,
-                                        color: Colors.white70,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      const Text(
-                                        'Offline',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ],
+              stretchModes: const [StretchMode.zoomBackground],
+              background: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primaryDark, AppColors.primary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: -20,
+                      right: -20,
+                      child: Icon(
+                        Icons.agriculture_rounded,
+                        size: 200,
+                        color: AppColors.white.withValues(alpha: 0.05),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Welcome back, farmer!',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.85),
-                          letterSpacing: 0.2,
+                    ),
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _buildAppLogo(),
+                                _buildConnectivityStatus(ref),
+                              ],
+                            ),
+                            const Spacer(),
+                            const Text(
+                              'Hello, Gilbert!',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Your farm is doing great today.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white.withValues(alpha: 0.8),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          // Content
-          const SliverToBoxAdapter(
+
+          // Quick Actions Section
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'My Farm Communities',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+              child: Row(
+                children: [
+                  const Text(
+                    'My Communities',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.grey900,
+                    ),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('View All'),
+                  ),
+                ],
               ),
             ),
           ),
           
           const SliverToBoxAdapter(
             child: SizedBox(
-              height: 140,
+              height: 200,
               child: NicheCommunitiesList(),
             ),
           ),
           
+          // AI Scan Call to Action
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: AIQuickScanButton(),
             ),
           ),
           
-          const SliverToBoxAdapter(
+          // Market Section
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Local Market Pulse',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+              child: Row(
+                children: [
+                  const Text(
+                    'Market Pulse',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.grey900,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondarySoft,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'Live',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.secondaryDark,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           
           const MarketPulseList(),
           
-          const SliverToBoxAdapter(
+          // Expert Help Card
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Get Expert Help',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+              child: const Text(
+                'Professional Help',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.grey900,
+                ),
               ),
             ),
           ),
           
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.all(20),
               child: _ExpertAccessCard(),
             ),
           ),
           
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Your Activity',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: _ActivityTracker(),
-            ),
-          ),
-          
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 100),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -191,22 +198,86 @@ class DashboardPage extends ConsumerWidget {
             ),
           );
         },
-        backgroundColor: const Color(0xFF2E7D32),
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
-        icon: const Icon(Icons.smart_toy),
-        label: const Text('AI Chat'),
+        icon: const Icon(Icons.forum_rounded),
+        label: const Text(
+          'AI Assistant',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
-  Widget _buildPulseIcon() {
+  Widget _buildAppLogo() {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(Icons.eco_rounded, color: Colors.white, size: 20),
+        ),
+        const SizedBox(width: 10),
+        const Text(
+          'FarmCom',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+            letterSpacing: 1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConnectivityStatus(WidgetRef ref) {
+    final isOnline = ref.watch(isOnlineProvider);
     return Container(
-      width: 6,
-      height: 6,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: isOnline 
+          ? AppColors.success.withValues(alpha: 0.2)
+          : AppColors.error.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isOnline ? Colors.greenAccent : Colors.redAccent,
+              boxShadow: [
+                if (isOnline)
+                  BoxShadow(
+                    color: Colors.greenAccent.withValues(alpha: 0.5),
+                    blurRadius: 4,
+                    spreadRadius: 1,
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            isOnline ? 'ONLINE' : 'OFFLINE',
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -217,217 +288,65 @@ class _ExpertAccessCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return FarmComCard(
+      padding: EdgeInsets.zero,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2E7D32).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.verified_user,
-                  color: Color(0xFF2E7D32),
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Connect with Experts',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Get personalized advice from crop specialists',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Expert connection feature coming soon'),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2E7D32),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              child: const Text(
-                'Request Expert',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.tertiarySoft.withValues(alpha: 0.5),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActivityTracker extends StatelessWidget {
-  const _ActivityTracker();
-
-  @override
-  Widget build(BuildContext context) {
-    final activities = [
-      {
-        'icon': Icons.chat_bubble_outline,
-        'title': 'Community Chats',
-        'count': '12 conversations',
-        'percentage': 35,
-      },
-      {
-        'icon': Icons.auto_graph,
-        'title': 'Market Tracking',
-        'count': '24 crops monitored',
-        'percentage': 30,
-      },
-      {
-        'icon': Icons.school,
-        'title': 'Learning',
-        'count': '8 guides reviewed',
-        'percentage': 20,
-      },
-      {
-        'icon': Icons.bug_report,
-        'title': 'Disease Checks',
-        'count': '5 scans performed',
-        'percentage': 15,
-      },
-    ];
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...activities.asMap().entries.map((entry) {
-            final activity = entry.value as Map<String, dynamic>;
-            final percentage = (activity['percentage'] as int) / 100;
-
-            return Column(
+            child: Row(
               children: [
-                if (entry.key > 0)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Divider(color: Colors.grey.shade200, height: 1),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.tertiary,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2E7D32).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        activity['icon'] as IconData,
-                        color: const Color(0xFF2E7D32),
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            activity['title'] as String,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            activity['count'] as String,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      '${activity['percentage']}%',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF2E7D32),
-                      ),
-                    ),
-                  ],
+                  child: const Icon(Icons.verified_user_rounded, color: Colors.white),
                 ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: percentage as double,
-                    minHeight: 4,
-                    backgroundColor: Colors.grey.shade200,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      const Color(0xFF2E7D32).withValues(alpha: 0.6),
-                    ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Verified Agronomists',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Professional advice for your crops',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.grey600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            );
-          }).toList(),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: FarmComButton(
+              label: 'Book Consultation',
+              variant: FarmComButtonVariant.tertiary,
+              height: 48,
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Expert consultations coming soon!')),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );

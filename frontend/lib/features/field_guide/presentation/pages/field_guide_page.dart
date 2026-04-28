@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:farmcom/core/presentation/widgets/section_header_with_status.dart';
+import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
 
 class FieldGuidePage extends ConsumerWidget {
   const FieldGuidePage({super.key});
@@ -10,64 +12,58 @@ class FieldGuidePage extends ConsumerWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: AppColors.grey50,
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar(
-              expandedHeight: 140,
+              expandedHeight: 120,
               floating: false,
               pinned: true,
-              backgroundColor: Colors.white,
               elevation: 0,
+              backgroundColor: AppColors.primary,
+              leading: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+              ),
               flexibleSpace: FlexibleSpaceBar(
                 title: const Text(
                   'Field Guide',
                   style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-                titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+                titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
                 background: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey.shade200,
-                        width: 1,
-                      ),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Icon(Icons.menu_book, color: const Color(0xFF2E7D32), size: 28),
-                        const SizedBox(width: 12),
-                      ],
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.primaryDark, AppColors.primary],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                   ),
                 ),
               ),
-              leading: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(8),
+            ),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverAppBarDelegate(
+                Container(
+                  color: Colors.white,
+                  child: const TabBar(
+                    tabs: [
+                      Tab(text: 'Learning Center'),
+                      Tab(text: 'Expert Access'),
+                    ],
+                    indicatorColor: AppColors.primary,
+                    indicatorWeight: 3,
+                    labelColor: AppColors.primary,
+                    unselectedLabelColor: AppColors.grey500,
+                    labelStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                    unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
-                  child: const Icon(Icons.arrow_back, color: Colors.black87),
                 ),
-              ),
-              bottom: const TabBar(
-                tabs: [
-                  Tab(text: 'Learning Center'),
-                  Tab(text: 'Expert Access'),
-                ],
-                indicatorColor: Color(0xFF2E7D32),
-                labelColor: Color(0xFF2E7D32),
-                unselectedLabelColor: Colors.grey,
               ),
             ),
           ],
@@ -83,6 +79,27 @@ class FieldGuidePage extends ConsumerWidget {
   }
 }
 
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final Widget _tabBar;
+
+  @override
+  double get minExtent => 48;
+  @override
+  double get maxExtent => 48;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return _tabBar;
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
+}
+
 class _LearningCenter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -90,58 +107,81 @@ class _LearningCenter extends StatelessWidget {
       {
         'title': 'Coffee Growing Guide',
         'subtitle': 'Best practices for coffee production',
-        'icon': Icons.spa,
+        'icon': Icons.spa_rounded,
         'color': Colors.brown,
       },
       {
         'title': 'Maize Cultivation',
         'subtitle': 'Seed selection to harvest',
-        'icon': Icons.grass,
+        'icon': Icons.grass_rounded,
         'color': Colors.amber,
       },
       {
         'title': 'Soil Management',
         'subtitle': 'Soil health and fertility',
-        'icon': Icons.landscape,
+        'icon': Icons.landscape_rounded,
         'color': Colors.orange,
       },
       {
         'title': 'Pest Control',
         'subtitle': 'Organic and chemical methods',
-        'icon': Icons.bug_report,
+        'icon': Icons.bug_report_rounded,
         'color': Colors.red,
       },
       {
         'title': 'Irrigation Systems',
         'subtitle': 'Water management techniques',
-        'icon': Icons.water_drop,
+        'icon': Icons.water_drop_rounded,
         'color': Colors.blue,
       },
       {
         'title': 'Crop Rotation',
         'subtitle': 'Sustainable farming practices',
-        'icon': Icons.public,
+        'icon': Icons.public_rounded,
         'color': Colors.green,
       },
     ];
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       itemCount: guides.length,
       itemBuilder: (context, index) {
         final guide = guides[index] as Map<String, dynamic>;
-        return _GuideCard(
-          title: guide['title'] as String,
-          subtitle: guide['subtitle'] as String,
-          icon: guide['icon'] as IconData,
-          color: guide['color'] as Color,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${guide['title']} guide coming soon'),
-              ),
-            );
-          },
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: FarmComCard(
+            onTap: () {},
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: (guide['color'] as Color).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(guide['icon'] as IconData, color: guide['color'] as Color),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        guide['title'] as String,
+                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        guide['subtitle'] as String,
+                        style: TextStyle(color: AppColors.grey500, fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.grey300),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -152,114 +192,108 @@ class _ExpertAccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF2E7D32), Color(0xFF1B5E20)],
+                colors: [AppColors.tertiary, AppColors.tertiaryDark],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.tertiary.withValues(alpha: 0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Row(
                   children: [
-                    Icon(Icons.star, color: Colors.amber, size: 24),
-                    SizedBox(width: 8),
+                    Icon(Icons.verified_rounded, color: Colors.white, size: 28),
+                    SizedBox(width: 12),
                     Text(
-                      'Expert Consultation',
+                      'Direct Expert Access',
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w900,
                         color: Colors.white,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 Text(
-                  'Connect with agricultural experts for personalized advice on your farming operations.',
+                  'Connect with verified agronomists for professional advice on your farm.',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.9),
-                    height: 1.6,
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 32),
           const Text(
             'How it works',
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: AppColors.grey900,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           _StepItem(
             number: '1',
-            title: 'Post Your Question',
-            description: 'Describe your farming challenge or question in detail',
+            title: 'Describe Your Issue',
+            description: 'Provide details about your crop or animal health concerns.',
+            icon: Icons.edit_note_rounded,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           _StepItem(
             number: '2',
-            title: 'Get Expert Response',
-            description: 'Receive answers from verified agricultural experts within 24 hours',
+            title: 'Expert Review',
+            description: 'A verified agronomist reviews your case and diagnostic photos.',
+            icon: Icons.rate_review_rounded,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           _StepItem(
             number: '3',
-            title: 'Apply Solutions',
-            description: 'Implement the advice and track results on your farm',
+            title: 'Get Prescription',
+            description: 'Receive a detailed treatment plan and recommended inputs.',
+            icon: Icons.receipt_long_rounded,
+          ),
+          const SizedBox(height: 40),
+          FarmComButton(
+            label: 'Request Expert Access',
+            onPressed: () {},
+            icon: Icons.support_agent_rounded,
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Expert access registration coming soon'),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.mail),
-              label: const Text('Request Expert Access'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2E7D32),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.blue.shade200),
-            ),
+          FarmComCard(
+            color: AppColors.tertiarySoft.withValues(alpha: 0.5),
+            border: Border.all(color: AppColors.tertiary.withValues(alpha: 0.2)),
             child: Row(
               children: [
-                Icon(Icons.info, color: Colors.blue.shade700, size: 20),
-                const SizedBox(width: 8),
+                const Icon(Icons.info_outline_rounded, color: AppColors.tertiary),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Your submissions are reviewed by certified agricultural extension officers',
+                    'All experts are certified by the Ministry of Agriculture.',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue.shade700,
+                      color: AppColors.tertiaryDark,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -272,86 +306,17 @@ class _ExpertAccess extends StatelessWidget {
   }
 }
 
-class _GuideCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _GuideCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: color.withValues(alpha: 0.3),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, color: color, size: 20),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _StepItem extends StatelessWidget {
   final String number;
   final String title;
   final String description;
+  final IconData icon;
 
   const _StepItem({
     required this.number,
     required this.title,
     required this.description,
+    required this.icon,
   });
 
   @override
@@ -360,24 +325,24 @@ class _StepItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
-            color: const Color(0xFF2E7D32),
-            borderRadius: BorderRadius.circular(18),
+            color: AppColors.primarySoft,
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
             child: Text(
               number,
               style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w900,
+                fontSize: 16,
               ),
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,18 +350,19 @@ class _StepItem extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.grey900,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 description,
                 style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                  height: 1.5,
+                  fontSize: 13,
+                  color: AppColors.grey600,
+                  height: 1.4,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],

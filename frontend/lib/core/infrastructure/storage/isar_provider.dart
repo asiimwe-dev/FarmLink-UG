@@ -2,7 +2,7 @@
 
 // import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:farmcom/core/utils/logger.dart';
 import 'schemas/user_schema.dart';
 import 'schemas/post_schema.dart';
 import 'schemas/disease_schema.dart';
@@ -19,12 +19,13 @@ late final dynamic isar;
 /// TODO: Re-enable when AGP 8.x compatibility is resolved
 Future<dynamic> initializeIsar() async {
   final dir = await getApplicationDocumentsDirectory();
-  print('✅ Isar database path prepared: ${dir.path}');
-  
+  Logger.i('⏳ Isar database path prepared: ${dir.path}');
+
   // Stub implementation for UI testing
   // Real implementation requires Isar 3.2.0+ for AGP 8.x support
   return null;
 }
+
 
 /// Get the global Isar instance
 dynamic getIsarInstance() {

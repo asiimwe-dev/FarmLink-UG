@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:farmcom/core/theme/app_colors.dart';
 
 class CommunityChatPage extends StatefulWidget {
   final String communityName;
@@ -19,28 +20,28 @@ class CommunityChatPage extends StatefulWidget {
 class _CommunityChatPageState extends State<CommunityChatPage> {
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
-  final List<CommunityMessage> _messages = [
-    CommunityMessage(
-      text: 'Just harvested my coffee crop! Quality is great this season.',
-      username: 'James Mukwaya',
-      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-      isCurrentUser: false,
-      likes: 8,
-    ),
-    CommunityMessage(
-      text: 'That\'s awesome! What did you get for your yield? @James',
-      username: 'Sarah Katende',
-      timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 30)),
-      isCurrentUser: false,
-      likes: 3,
-    ),
-    CommunityMessage(
-      text: 'About 250kg from my 2-acre plot. Using the new irrigation method helped a lot.',
-      username: 'James Mukwaya',
-      timestamp: DateTime.now().subtract(const Duration(hours: 1)),
-      isCurrentUser: false,
-      likes: 12,
-    ),
+  final List<Map<String, dynamic>> _messages = [
+    {
+      'user': 'James Mukwaya',
+      'text': 'Just harvested my coffee crop! Quality is great this season.',
+      'isMe': false,
+      'time': '10:30 AM',
+      'role': 'Farmer'
+    },
+    {
+      'user': 'Sarah Katende',
+      'text': 'James, that\'s awesome! What did you get for your yield?',
+      'isMe': false,
+      'time': '10:35 AM',
+      'role': 'Farmer'
+    },
+    {
+      'user': 'Me',
+      'text': 'About 250kg from my 2-acre plot. Using the new irrigation method helped a lot.',
+      'isMe': true,
+      'time': '10:42 AM',
+      'role': 'Farmer'
+    },
   ];
 
   @override
@@ -55,13 +56,13 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
     if (text.isEmpty) return;
 
     setState(() {
-      _messages.add(CommunityMessage(
-        text: text,
-        username: 'You',
-        timestamp: DateTime.now(),
-        isCurrentUser: true,
-        likes: 0,
-      ));
+      _messages.add({
+        'user': 'Me',
+        'text': text,
+        'isMe': true,
+        'time': 'Just now',
+        'role': 'Farmer'
+      });
     });
 
     _messageController.clear();
@@ -83,216 +84,213 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.grey50,
       appBar: AppBar(
+        titleSpacing: 0,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+        ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(widget.communityName),
+            Text(
+              widget.communityName,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+            ),
             Text(
               '${widget.members} members',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+              style: const TextStyle(fontSize: 11, color: AppColors.grey500, fontWeight: FontWeight.w600),
             ),
           ],
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        centerTitle: false,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.arrow_back, color: Colors.black87),
-          ),
-        ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert_rounded)),
+          const SizedBox(width: 8),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              padding: const EdgeInsets.all(20),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                return _CommunityMessageBubble(message: message);
+                return _ChatBubble(
+                  user: message['user'],
+                  text: message['text'],
+                  isMe: message['isMe'],
+                  time: message['time'],
+                  role: message['role'],
+                );
               },
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(color: Colors.grey.shade200),
-              ),
-            ),
-            padding: const EdgeInsets.all(12),
-            child: SafeArea(
-              top: false,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      decoration: InputDecoration(
-                        hintText: 'Share with the community...',
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF2E7D32),
-                            width: 2,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                      maxLines: null,
-                      textCapitalization: TextCapitalization.sentences,
-                      onSubmitted: (_) => _sendMessage(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2E7D32),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.white),
-                      onPressed: _sendMessage,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade500,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.mic, color: Colors.white),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Voice recording feature coming soon'),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          _buildInputArea(),
         ],
       ),
     );
   }
-}
 
-class _CommunityMessageBubble extends StatelessWidget {
-  final CommunityMessage message;
-
-  const _CommunityMessageBubble({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: message.isCurrentUser
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
+  Widget _buildInputArea() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
         children: [
-          if (!message.isCurrentUser)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                message.username,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.grey50,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.grey200),
+              ),
+              child: TextField(
+                controller: _messageController,
+                maxLines: 4,
+                minLines: 1,
+                decoration: const InputDecoration(
+                  hintText: 'Share with community...',
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.75,
-            ),
-            decoration: BoxDecoration(
-              color: message.isCurrentUser
-                  ? const Color(0xFF2E7D32)
-                  : Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              message.text,
-              style: TextStyle(
-                fontSize: 14,
-                color: message.isCurrentUser ? Colors.white : Colors.black87,
+          ),
+          const SizedBox(width: 12),
+          GestureDetector(
+            onTap: _sendMessage,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
               ),
+              child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
             ),
           ),
-          if (!message.isCurrentUser)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${message.likes} likes',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                      Icons.favorite_outline,
-                      size: 12,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
         ],
       ),
     );
   }
 }
 
-class CommunityMessage {
+class _ChatBubble extends StatelessWidget {
+  final String user;
   final String text;
-  final String username;
-  final DateTime timestamp;
-  final bool isCurrentUser;
-  final int likes;
+  final bool isMe;
+  final String time;
+  final String role;
 
-  CommunityMessage({
+  const _ChatBubble({
+    required this.user,
     required this.text,
-    required this.username,
-    required this.timestamp,
-    required this.isCurrentUser,
-    required this.likes,
+    required this.isMe,
+    required this.time,
+    required this.role,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    final isExpert = role == 'Expert';
+    
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          if (!isMe)
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 4),
+              child: Row(
+                children: [
+                  Text(
+                    user,
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.grey900),
+                  ),
+                  if (isExpert) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.tertiarySoft,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        'EXPERT',
+                        style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: AppColors.tertiary),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          Container(
+            padding: const EdgeInsets.all(16),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+            decoration: BoxDecoration(
+              color: isMe ? AppColors.primary : (isExpert ? AppColors.tertiarySoft.withValues(alpha: 0.3) : Colors.white),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(20),
+                topRight: const Radius.circular(20),
+                bottomLeft: Radius.circular(isMe ? 20 : 4),
+                bottomRight: Radius.circular(isMe ? 4 : 20),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: isMe ? Colors.white : AppColors.grey900,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  time,
+                  style: TextStyle(
+                    color: isMe ? Colors.white.withValues(alpha: 0.6) : AppColors.grey500,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/features/auth/presentation/providers/auth_provider.dart';
 import 'package:farmcom/features/settings/presentation/pages/settings_page.dart';
-import 'package:farmcom/core/presentation/widgets/section_header_with_status.dart';
+import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
 
 class UserProfilePage extends ConsumerStatefulWidget {
   const UserProfilePage({super.key});
@@ -13,7 +15,6 @@ class UserProfilePage extends ConsumerStatefulWidget {
 
 class _UserProfilePageState extends ConsumerState<UserProfilePage> {
   late TextEditingController _nameController;
-  late TextEditingController _phoneController;
   late TextEditingController _bioController;
   late TextEditingController _regionController;
   late List<String> _interests;
@@ -24,16 +25,14 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
     super.initState();
     final user = ref.read(authProvider).user;
     _nameController = TextEditingController(text: user?.name ?? 'Test Farmer');
-    _phoneController = TextEditingController(text: user?.phone ?? '');
-    _bioController = TextEditingController(text: user?.bio ?? '');
-    _regionController = TextEditingController(text: user?.region ?? '');
-    _interests = List.from(user?.interests ?? ['Coffee', 'Maize']);
+    _bioController = TextEditingController(text: user?.bio ?? 'Passionate about sustainable coffee farming.');
+    _regionController = TextEditingController(text: user?.region ?? 'Central Uganda');
+    _interests = List.from(user?.interests ?? ['Coffee', 'Maize', 'Poultry']);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _phoneController.dispose();
     _bioController.dispose();
     _regionController.dispose();
     super.dispose();
@@ -56,181 +55,144 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final user = ref.watch(authProvider).user;
 
     return Scaffold(
+      backgroundColor: AppColors.grey50,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120,
+            expandedHeight: 200,
             floating: false,
             pinned: true,
-            backgroundColor: Colors.white,
             elevation: 0,
+            stretch: true,
+            backgroundColor: AppColors.primary,
             flexibleSpace: FlexibleSpaceBar(
-              title: const Text(
-                'My Profile',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+              stretchModes: const [StretchMode.zoomBackground],
               background: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.grey.shade200,
-                      width: 1,
-                    ),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primaryDark, AppColors.primary],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Icon(Icons.person, color: const Color(0xFF2E7D32), size: 28),
-                      const SizedBox(width: 12),
-                    ],
-                  ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Positioned(
+                      bottom: 40,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 4),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(Icons.person_rounded, size: 40, color: AppColors.primary),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            _nameController.text,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            user?.phone ?? '+256 701 234 567',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            leading: null,
+            actions: [
+              IconButton(
+                onPressed: _isEditing ? _saveProfile : _toggleEditMode,
+                icon: Icon(_isEditing ? Icons.check_circle_rounded : Icons.edit_rounded, color: Colors.white),
+              ),
+              const SizedBox(width: 8),
+            ],
           ),
+          
           SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile Info Header (Non-Card Style)
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 20),
+                  _buildSectionTitle('General Information'),
+                  const SizedBox(height: 12),
+                  FarmComCard(
                     child: Column(
                       children: [
-                        Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF2E7D32).withValues(alpha: 0.15),
-                            border: Border.all(
-                              color: const Color(0xFF2E7D32),
-                              width: 2,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.person,
-                            size: 45,
-                            color: Color(0xFF2E7D32),
-                          ),
+                        _buildProfileItem(Icons.person_outline_rounded, 'Full Name', _nameController, _isEditing),
+                        const Divider(height: 24),
+                        _buildProfileItem(Icons.info_outline_rounded, 'Bio', _bioController, _isEditing, maxLines: 2),
+                        const Divider(height: 24),
+                        _buildProfileItem(Icons.location_on_outlined, 'Region', _regionController, _isEditing),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  _buildSectionTitle('Farming Interests'),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _interests.map((interest) => _buildInterestChip(interest)).toList(),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  _buildSectionTitle('Account Settings'),
+                  const SizedBox(height: 12),
+                  FarmComCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        _buildActionTile(
+                          icon: Icons.settings_outlined,
+                          title: 'App Preferences',
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage())),
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          _nameController.text.isEmpty
-                              ? 'Test Farmer'
-                              : _nameController.text,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black87,
-                          ),
+                        const Divider(height: 1),
+                        _buildActionTile(
+                          icon: Icons.help_outline_rounded,
+                          title: 'Help & Support',
+                          onTap: () {},
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _phoneController.text,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton.icon(
-                              onPressed: _isEditing ? _saveProfile : _toggleEditMode,
-                              icon: Icon(
-                                _isEditing ? Icons.check : Icons.edit,
-                                size: 18,
-                              ),
-                              label: Text(
-                                _isEditing ? 'Save' : 'Edit Profile',
-                                style: const TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFF2E7D32)
-                                    .withValues(alpha: 0.1),
-                                foregroundColor: const Color(0xFF2E7D32),
-                              ),
-                            ),
-                            if (_isEditing) ...[
-                              const SizedBox(width: 8),
-                              TextButton.icon(
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Image picker coming soon'),
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.camera_alt, size: 18),
-                                label: const Text('Change Photo'),
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.grey.shade200,
-                                  foregroundColor: Colors.grey.shade800,
-                                ),
-                              ),
-                            ],
-                          ],
+                        const Divider(height: 1),
+                        _buildActionTile(
+                          icon: Icons.logout_rounded,
+                          title: 'Logout',
+                          isDestructive: true,
+                          onTap: _showLogoutDialog,
                         ),
                       ],
                     ),
                   ),
-                  Divider(color: Colors.grey.shade300, thickness: 1),
-                  const SizedBox(height: 20),
-                  // Profile Information Section
-                  _buildProfileInfoSection(),
-                  const SizedBox(height: 24),
-                  // Settings and Logout
-                  _buildActionTile(
-                    icon: Icons.settings,
-                    title: 'Settings',
-                    subtitle: 'App preferences and customization',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  _buildActionTile(
-                    icon: Icons.help_outline,
-                    title: 'Help & Support',
-                    subtitle: 'Get help or report issues',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Help & Support coming soon'),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  _buildActionTile(
-                    icon: Icons.logout,
-                    title: 'Logout',
-                    subtitle: 'Sign out of your account',
-                    isDestructive: true,
-                    onTap: () {
-                      _showLogoutDialog();
-                    },
-                  ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -240,107 +202,49 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
     );
   }
 
-  Widget _buildProfileInfoSection() {
-    return Column(
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w800,
+        color: AppColors.grey900,
+        letterSpacing: 0.5,
+      ),
+    );
+  }
+
+  Widget _buildProfileItem(IconData icon, String label, TextEditingController controller, bool isEditing, {int maxLines = 1}) {
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'About You',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.grey.shade800,
-          ),
-        ),
-        const SizedBox(height: 12),
-        _buildProfileField(
-          label: 'Full Name',
-          controller: _nameController,
-          isEditing: _isEditing,
-          icon: Icons.person,
-        ),
-        const SizedBox(height: 12),
-        _buildProfileField(
-          label: 'Phone Number',
-          controller: _phoneController,
-          isEditing: false,
-          icon: Icons.phone,
-          enabled: false,
-        ),
-        const SizedBox(height: 12),
-        _buildProfileField(
-          label: 'Bio',
-          controller: _bioController,
-          isEditing: _isEditing,
-          icon: Icons.info,
-          maxLines: 3,
-        ),
-        const SizedBox(height: 12),
-        _buildProfileField(
-          label: 'Region',
-          controller: _regionController,
-          isEditing: _isEditing,
-          icon: Icons.location_on,
-        ),
-        const SizedBox(height: 24),
-        // Interests Section
-        Text(
-          'Farming Interests',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: Colors.grey.shade800,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: const Color(0xFF2E7D32).withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFF2E7D32).withValues(alpha: 0.2),
-            ),
-          ),
+        Icon(icon, size: 20, color: AppColors.primary),
+        const SizedBox(width: 16),
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_isEditing)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Your Interests',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Add interest feature coming soon'),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.add_circle),
-                        color: const Color(0xFF2E7D32),
-                        iconSize: 24,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-                ),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: _interests
-                    .map((interest) => _buildInterestChip(interest, _isEditing))
-                    .toList(),
+              Text(
+                label,
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.grey500, letterSpacing: 0.5),
               ),
+              const SizedBox(height: 4),
+              if (isEditing)
+                TextField(
+                  controller: controller,
+                  maxLines: maxLines,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 8),
+                    border: UnderlineInputBorder(),
+                  ),
+                )
+              else
+                Text(
+                  controller.text,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.grey900),
+                ),
             ],
           ),
         ),
@@ -348,145 +252,31 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
     );
   }
 
-  Widget _buildProfileField({
-    required String label,
-    required TextEditingController controller,
-    required bool isEditing,
-    required IconData icon,
-    int maxLines = 1,
-    bool enabled = true,
-  }) {
+  Widget _buildInterestChip(String label) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 18, color: const Color(0xFF2E7D32)),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          if (isEditing && enabled)
-            TextField(
-              controller: controller,
-              maxLines: maxLines,
-              decoration: InputDecoration(
-                hintText: 'Enter $label',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
-              ),
-            )
-          else
-            Text(
-              controller.text.isEmpty ? 'Not set' : controller.text,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.black87,
-              ),
-            ),
-        ],
+      child: Text(
+        label,
+        style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700, fontSize: 13),
       ),
     );
   }
 
-  Widget _buildInterestChip(String interest, bool isEditing) {
-    return Chip(
-      label: Text(interest),
-      backgroundColor: const Color(0xFF2E7D32).withValues(alpha: 0.1),
-      labelStyle: const TextStyle(
-        color: Color(0xFF2E7D32),
-        fontWeight: FontWeight.w600,
-      ),
-      onDeleted: isEditing
-          ? () {
-              setState(() {
-                _interests.remove(interest);
-              });
-            }
-          : null,
-      deleteIcon: isEditing ? const Icon(Icons.close, size: 18) : null,
-      deleteIconColor: const Color(0xFF2E7D32),
-    );
-  }
-
-  Widget _buildActionTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-    bool isDestructive = false,
-  }) {
-    return GestureDetector(
+  Widget _buildActionTile({required IconData icon, required String title, required VoidCallback onTap, bool isDestructive = false}) {
+    final color = isDestructive ? AppColors.error : AppColors.grey900;
+    return ListTile(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: isDestructive ? Colors.red.shade50 : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isDestructive ? Colors.red.shade200 : Colors.grey.shade200,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isDestructive ? Colors.red : const Color(0xFF2E7D32),
-              size: 24,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: isDestructive ? Colors.red : Colors.black87,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDestructive
-                          ? Colors.red.shade600
-                          : Colors.grey.shade600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right,
-              color: isDestructive ? Colors.red : Colors.grey,
-            ),
-          ],
-        ),
+      leading: Icon(icon, color: color, size: 22),
+      title: Text(
+        title,
+        style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 15),
       ),
+      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.grey300),
     );
   }
 
@@ -494,25 +284,20 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w900)),
         content: const Text('Are you sure you want to logout?'),
         actions: [
           TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: AppColors.grey500, fontWeight: FontWeight.w700)),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
               ref.read(authProvider.notifier).logout();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Logged out successfully')),
-              );
             },
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('Logout', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w900)),
           ),
         ],
       ),
