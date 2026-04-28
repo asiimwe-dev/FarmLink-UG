@@ -83,11 +83,13 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.grey50,
+      backgroundColor: isDark ? const Color(0xFF121212) : AppColors.grey50,
       appBar: AppBar(
         titleSpacing: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -98,11 +100,11 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
           children: [
             Text(
               widget.communityName,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: isDark ? Colors.white : AppColors.grey900),
             ),
             Text(
               '${widget.members} members',
-              style: const TextStyle(fontSize: 11, color: AppColors.grey500, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 11, color: isDark ? Colors.white60 : AppColors.grey500, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -131,17 +133,17 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
               },
             ),
           ),
-          _buildInputArea(),
+          _buildInputArea(isDark),
         ],
       ),
     );
   }
 
-  Widget _buildInputArea() {
+  Widget _buildInputArea(bool isDark) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 12),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, MediaQuery.of(context).padding.bottom + 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -156,24 +158,36 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
             onPressed: () {},
             icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
           ),
+          IconButton(
+            onPressed: () {
+               ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Voice note feature coming soon!')),
+              );
+            },
+            icon: const Icon(Icons.mic_none_rounded, color: AppColors.primary),
+            style: IconButton.styleFrom(backgroundColor: AppColors.primarySoft),
+          ),
+          const SizedBox(width: 8),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: AppColors.grey50,
+                color: isDark ? const Color(0xFF2C2C2C) : AppColors.grey50,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.grey200),
+                border: Border.all(color: isDark ? Colors.white12 : AppColors.grey200),
               ),
               child: TextField(
                 controller: _messageController,
                 maxLines: 4,
                 minLines: 1,
-                decoration: const InputDecoration(
+                style: TextStyle(color: isDark ? Colors.white : AppColors.grey900),
+                decoration: InputDecoration(
                   hintText: 'Share with community...',
+                  hintStyle: TextStyle(color: isDark ? Colors.white38 : AppColors.grey500),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
@@ -214,6 +228,7 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isExpert = role == 'Expert';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -227,7 +242,7 @@ class _ChatBubble extends StatelessWidget {
                 children: [
                   Text(
                     user,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.grey900),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900),
                   ),
                   if (isExpert) ...[
                     const SizedBox(width: 6),
@@ -250,7 +265,7 @@ class _ChatBubble extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
             decoration: BoxDecoration(
-              color: isMe ? AppColors.primary : (isExpert ? AppColors.tertiarySoft.withValues(alpha: 0.3) : Colors.white),
+              color: isMe ? AppColors.primary : (isDark ? const Color(0xFF2C2C2C) : (isExpert ? AppColors.tertiarySoft.withValues(alpha: 0.3) : Colors.white)),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(20),
                 topRight: const Radius.circular(20),
@@ -271,7 +286,7 @@ class _ChatBubble extends StatelessWidget {
                 Text(
                   text,
                   style: TextStyle(
-                    color: isMe ? Colors.white : AppColors.grey900,
+                    color: isMe ? Colors.white : (isDark ? Colors.white : AppColors.grey900),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     height: 1.4,
@@ -281,7 +296,7 @@ class _ChatBubble extends StatelessWidget {
                 Text(
                   time,
                   style: TextStyle(
-                    color: isMe ? Colors.white.withValues(alpha: 0.6) : AppColors.grey500,
+                    color: isMe ? Colors.white.withValues(alpha: 0.6) : (isDark ? Colors.white38 : AppColors.grey500),
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),

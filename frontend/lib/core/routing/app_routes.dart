@@ -23,6 +23,9 @@ class AppRoutes {
   static const String payment = '/payment';
   static const String transactionHistory = '/transactions';
 
+  // Notifications
+  static const String notifications = '/notifications';
+
   // Settings
   static const String settings = '/settings';
   static const String settingsCustomization = '/settings/customization';

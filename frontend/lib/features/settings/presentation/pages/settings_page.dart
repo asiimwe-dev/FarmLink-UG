@@ -1,712 +1,375 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/theme/theme_provider.dart';
+import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  ConsumerState<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 120,
-            floating: false,
-            pinned: true,
-            backgroundColor: Colors.white,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: const Text(
-                'Settings',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
-              background: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.grey.shade200,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Icon(Icons.settings, color: const Color(0xFF2E7D32), size: 28),
-                      const SizedBox(width: 12),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            leading: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.arrow_back, color: Colors.black87),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _SettingsCategorySection(
-                  title: 'Customization',
-                  icon: Icons.palette,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const CustomizationSettingsPage(),
-                      ),
-                    );
-                  },
-                ),
-                _SettingsCategorySection(
-                  title: 'Notifications',
-                  icon: Icons.notifications,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const NotificationsSettingsPage(),
-                      ),
-                    );
-                  },
-                ),
-                _SettingsCategorySection(
-                  title: 'Privacy & Security',
-                  icon: Icons.security,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const PrivacySettingsPage(),
-                      ),
-                    );
-                  },
-                ),
-                _SettingsCategorySection(
-                  title: 'About',
-                  icon: Icons.info_outline,
-                  onTap: () {
-                    _showAboutDialog();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAboutDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('About FarmCom'),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('FarmCom v1.0.0'),
-            SizedBox(height: 16),
-            Text(
-              'FarmCom empowers farmers across Uganda with AI-driven insights, community support, and market access.',
-              style: TextStyle(height: 1.6),
-            ),
-            SizedBox(height: 16),
-            Text(
-              '© 2024 FarmCom. All rights reserved.',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsCategorySection extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _SettingsCategorySection({
-    required this.title,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2E7D32).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: const Color(0xFF2E7D32), size: 24),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Customization Settings Page
-class CustomizationSettingsPage extends StatefulWidget {
-  const CustomizationSettingsPage({super.key});
-
-  @override
-  State<CustomizationSettingsPage> createState() =>
-      _CustomizationSettingsPageState();
-}
-
-class _CustomizationSettingsPageState extends State<CustomizationSettingsPage> {
-  String _selectedTheme = 'light';
-  String _selectedLanguage = 'en';
-  bool _compactView = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Customization'),
-        backgroundColor: const Color(0xFF2E7D32),
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: Navigator.of(context).pop,
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildSettingSection('Appearance'),
-          _buildRadioOption(
-            'Light Theme',
-            'light',
-            _selectedTheme,
-            (value) => setState(() => _selectedTheme = value!),
-          ),
-          _buildRadioOption(
-            'Dark Theme',
-            'dark',
-            _selectedTheme,
-            (value) => setState(() => _selectedTheme = value!),
-          ),
-          _buildRadioOption(
-            'System Default',
-            'system',
-            _selectedTheme,
-            (value) => setState(() => _selectedTheme = value!),
-          ),
-          const SizedBox(height: 24),
-          _buildCheckboxOption(
-            'Compact View',
-            _compactView,
-            (value) => setState(() => _compactView = value!),
-          ),
-          const SizedBox(height: 24),
-          _buildSettingSection('Language'),
-          _buildRadioOption(
-            'English',
-            'en',
-            _selectedLanguage,
-            (value) => setState(() => _selectedLanguage = value!),
-          ),
-          _buildRadioOption(
-            'Luganda',
-            'lg',
-            _selectedLanguage,
-            (value) => setState(() => _selectedLanguage = value!),
-          ),
-          _buildRadioOption(
-            'Swahili',
-            'sw',
-            _selectedLanguage,
-            (value) => setState(() => _selectedLanguage = value!),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2E7D32),
-            ),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Settings saved successfully!'),
-                  backgroundColor: Color(0xFF2E7D32),
-                ),
-              );
-            },
-            child: const Text('Save Changes', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingSection(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          color: Colors.grey,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRadioOption(
-    String label,
-    String value,
-    String groupValue,
-    Function(String?) onChanged,
-  ) {
-    return GestureDetector(
-      onTap: () => onChanged(value),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: groupValue == value ? const Color(0xFF2E7D32) : Colors.grey.shade200,
-            width: groupValue == value ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Radio<String>(
-              value: value,
-              groupValue: groupValue,
-              onChanged: onChanged,
-              activeColor: const Color(0xFF2E7D32),
-            ),
-            Text(label),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCheckboxOption(
-    String label,
-    bool value,
-    Function(bool?) onChanged,
-  ) {
-    return GestureDetector(
-      onTap: () => onChanged(!value),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Row(
-          children: [
-            Checkbox(
-              value: value,
-              onChanged: onChanged,
-              activeColor: const Color(0xFF2E7D32),
-            ),
-            Text(label),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Notifications Settings Page
-class NotificationsSettingsPage extends StatefulWidget {
-  const NotificationsSettingsPage({super.key});
-
-  @override
-  State<NotificationsSettingsPage> createState() =>
-      _NotificationsSettingsPageState();
-}
-
-class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
+class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool _pushNotifications = true;
   bool _marketAlerts = true;
   bool _communityUpdates = true;
-  bool _soundEnabled = true;
-  bool _vibrationEnabled = true;
+  bool _offlineMode = false;
+  String _selectedLanguage = 'English';
+  String _selectedUnits = 'Metric';
 
   @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+    final themeNotifier = ref.read(themeProvider.notifier);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
-        backgroundColor: const Color(0xFF2E7D32),
-        foregroundColor: Colors.white,
+        title: const Text('App Preferences', style: TextStyle(fontWeight: FontWeight.w900)),
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: Navigator.of(context).pop,
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         children: [
-          const Text(
-            'Notification Types',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey,
-              letterSpacing: 0.5,
-            ),
-          ),
+          _buildSectionTitle('Appearance', isDark),
           const SizedBox(height: 12),
-          _buildToggleOption(
-            'Push Notifications',
-            'Receive notifications about important updates',
-            _pushNotifications,
-            (value) => setState(() => _pushNotifications = value),
-          ),
-          _buildToggleOption(
-            'Market Alerts',
-            'Get alerts about price changes and market trends',
-            _marketAlerts,
-            (value) => setState(() => _marketAlerts = value),
-          ),
-          _buildToggleOption(
-            'Community Updates',
-            'Notifications from communities you joined',
-            _communityUpdates,
-            (value) => setState(() => _communityUpdates = value),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Sound & Vibration',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildToggleOption(
-            'Sound',
-            'Play sound for notifications',
-            _soundEnabled,
-            (value) => setState(() => _soundEnabled = value),
-          ),
-          _buildToggleOption(
-            'Vibration',
-            'Vibrate device for notifications',
-            _vibrationEnabled,
-            (value) => setState(() => _vibrationEnabled = value),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2E7D32),
-            ),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Notification settings saved!'),
-                  backgroundColor: Color(0xFF2E7D32),
-                ),
-              );
-            },
-            child: const Text('Save Changes', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToggleOption(
-    String title,
-    String subtitle,
-    bool value,
-    Function(bool) onChanged,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
+          FarmComCard(
+            padding: EdgeInsets.zero,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: const Color(0xFF2E7D32),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Privacy Settings Page
-class PrivacySettingsPage extends StatefulWidget {
-  const PrivacySettingsPage({super.key});
-
-  @override
-  State<PrivacySettingsPage> createState() => _PrivacySettingsPageState();
-}
-
-class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
-  bool _profileVisibility = true;
-  bool _dataCollection = false;
-  bool _thirdPartySharing = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Privacy & Security'),
-        backgroundColor: const Color(0xFF2E7D32),
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: Navigator.of(context).pop,
-        ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text(
-            'Profile Visibility',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Expanded(
+                _buildThemeSelectionTile(themeState.themeMode, themeNotifier),
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Public Profile',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                      Row(
+                        children: [
+                          const Icon(Icons.format_size_rounded, size: 20, color: AppColors.primary),
+                          const SizedBox(width: 12),
+                          Text('Font Size', style: TextStyle(fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.grey900)),
+                        ],
                       ),
-                      SizedBox(height: 4),
-                      Text(
-                        'Allow others to view your profile',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      Slider(
+                        value: themeState.fontSizeMultiplier,
+                        min: 0.8,
+                        max: 1.4,
+                        divisions: 3,
+                        activeColor: AppColors.primary,
+                        onChanged: (val) => themeNotifier.setFontSize(val),
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Small', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
+                          Text('Large', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                Switch(
-                  value: _profileVisibility,
-                  onChanged: (value) =>
-                      setState(() => _profileVisibility = value),
-                  activeColor: const Color(0xFF2E7D32),
+              ],
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          _buildSectionTitle('Notifications', isDark),
+          const SizedBox(height: 12),
+          FarmComCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _buildToggleTile(
+                  icon: Icons.notifications_none_rounded,
+                  title: 'Push Notifications',
+                  subtitle: 'Daily updates and tips',
+                  value: _pushNotifications,
+                  onChanged: (val) => setState(() => _pushNotifications = val),
+                  isDark: isDark,
+                ),
+                const Divider(height: 1),
+                _buildToggleTile(
+                  icon: Icons.trending_up_rounded,
+                  title: 'Market Alerts',
+                  subtitle: 'Instant price changes',
+                  value: _marketAlerts,
+                  onChanged: (val) => setState(() => _marketAlerts = val),
+                  isDark: isDark,
+                ),
+                const Divider(height: 1),
+                _buildToggleTile(
+                  icon: Icons.groups_rounded,
+                  title: 'Community Updates',
+                  subtitle: 'Messages from communities',
+                  value: _communityUpdates,
+                  onChanged: (val) => setState(() => _communityUpdates = val),
+                  isDark: isDark,
                 ),
               ],
             ),
           ),
+
           const SizedBox(height: 24),
-          const Text(
-            'Data & Privacy',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.grey,
-              letterSpacing: 0.5,
+          _buildSectionTitle('App Settings', isDark),
+          const SizedBox(height: 12),
+          FarmComCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _buildToggleTile(
+                  icon: Icons.cloud_off_rounded,
+                  title: 'Offline Mode',
+                  subtitle: 'Use app without internet',
+                  value: _offlineMode,
+                  onChanged: (val) => setState(() => _offlineMode = val),
+                  isDark: isDark,
+                ),
+                const Divider(height: 1),
+                _buildDropdownTile(
+                  icon: Icons.language_rounded,
+                  title: 'Language',
+                  value: _selectedLanguage,
+                  options: ['English', 'Swahili', 'French', 'Spanish'],
+                  onChanged: (val) => setState(() => _selectedLanguage = val ?? 'English'),
+                  isDark: isDark,
+                ),
+                const Divider(height: 1),
+                _buildDropdownTile(
+                  icon: Icons.straighten_rounded,
+                  title: 'Measurement Units',
+                  value: _selectedUnits,
+                  options: ['Metric', 'Imperial'],
+                  onChanged: (val) => setState(() => _selectedUnits = val ?? 'Metric'),
+                  isDark: isDark,
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 12),
-          _buildPrivacyOption(
-            'Diagnostic Data Collection',
-            'Help improve FarmCom with usage data',
-            _dataCollection,
-            (value) => setState(() => _dataCollection = value),
-          ),
-          _buildPrivacyOption(
-            'Third-Party Sharing',
-            'Allow sharing data with partners',
-            _thirdPartySharing,
-            (value) => setState(() => _thirdPartySharing = value),
-          ),
+          
           const SizedBox(height: 24),
-          OutlinedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Clear Cache'),
-                  content: const Text(
-                    'This will remove cached data and improve performance. Continue?',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: Navigator.of(context).pop,
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Cache cleared successfully'),
-                          ),
-                        );
-                      },
-                      child: const Text('Clear'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: const Text('Clear Cache'),
-          ),
+          _buildSectionTitle('More', isDark),
           const SizedBox(height: 12),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2E7D32),
-            ),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Privacy settings saved!'),
-                  backgroundColor: Color(0xFF2E7D32),
+          FarmComCard(
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _buildActionTile(
+                  icon: Icons.info_outline_rounded,
+                  title: 'About FarmCom',
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutPage())),
+                  isDark: isDark,
                 ),
-              );
-            },
-            child: const Text('Save Changes', style: TextStyle(color: Colors.white)),
+                const Divider(height: 1),
+                _buildActionTile(
+                  icon: Icons.security_rounded,
+                  title: 'Privacy Policy',
+                  onTap: () {},
+                  isDark: isDark,
+                ),
+                const Divider(height: 1),
+                _buildActionTile(
+                  icon: Icons.description_outlined,
+                  title: 'Terms of Service',
+                  onTap: () {},
+                  isDark: isDark,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+          Center(
+            child: Text(
+              'FarmCom v1.0.0',
+              style: TextStyle(color: AppColors.grey500, fontSize: 12, fontWeight: FontWeight.w600),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPrivacyOption(
-    String title,
-    String subtitle,
-    bool value,
-    Function(bool) onChanged,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
+  Widget _buildSectionTitle(String title, bool isDark) {
+    return Text(
+      title,
+      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: isDark ? Colors.white70 : AppColors.grey700, letterSpacing: 0.5),
+    );
+  }
+
+  Widget _buildThemeSelectionTile(ThemeMode currentMode, ThemeNotifier notifier) {
+    return Column(
+      children: [
+        RadioListTile<ThemeMode>(
+          title: const Text('System Default', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          value: ThemeMode.system,
+          groupValue: currentMode,
+          activeColor: AppColors.primary,
+          onChanged: (val) => notifier.setThemeMode(val!),
+        ),
+        RadioListTile<ThemeMode>(
+          title: const Text('Light Mode', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          value: ThemeMode.light,
+          groupValue: currentMode,
+          activeColor: AppColors.primary,
+          onChanged: (val) => notifier.setThemeMode(val!),
+        ),
+        RadioListTile<ThemeMode>(
+          title: const Text('Dark Mode', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          value: ThemeMode.dark,
+          groupValue: currentMode,
+          activeColor: AppColors.primary,
+          onChanged: (val) => notifier.setThemeMode(val!),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildToggleTile({required IconData icon, required String title, required String subtitle, required bool value, required ValueChanged<bool> onChanged, required bool isDark}) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: AppColors.primarySoft, borderRadius: BorderRadius.circular(8)),
+        child: Icon(icon, color: AppColors.primary, size: 20),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                ),
-              ],
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
+      subtitle: Text(subtitle, style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : AppColors.grey500)),
+      trailing: Switch.adaptive(
+        value: value,
+        activeColor: AppColors.primary,
+        onChanged: onChanged,
+      ),
+    );
+  }
+
+  Widget _buildDropdownTile({
+    required IconData icon,
+    required String title,
+    required String value,
+    required List<String> options,
+    required ValueChanged<String?> onChanged,
+    required bool isDark,
+  }) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: AppColors.primarySoft, borderRadius: BorderRadius.circular(8)),
+        child: Icon(icon, color: AppColors.primary, size: 20),
+      ),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
+      trailing: DropdownButton<String>(
+        value: value,
+        underline: const SizedBox(),
+        items: options.map((String option) {
+          return DropdownMenuItem<String>(
+            value: option,
+            child: Text(option, style: TextStyle(color: isDark ? Colors.white : AppColors.grey900)),
+          );
+        }).toList(),
+        onChanged: onChanged,
+      ),
+    );
+  }
+
+  Widget _buildActionTile({required IconData icon, required String title, required VoidCallback onTap, required bool isDark}) {
+    return ListTile(
+      onTap: onTap,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: isDark ? Colors.white10 : AppColors.grey100, borderRadius: BorderRadius.circular(8)),
+        child: Icon(icon, color: isDark ? Colors.white70 : AppColors.grey700, size: 20),
+      ),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
+      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.grey300),
+    );
+  }
+}
+
+class AboutPage extends StatelessWidget {
+  const AboutPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Scaffold(
+      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
+      appBar: AppBar(
+        title: const Text('About FarmCom', style: TextStyle(fontWeight: FontWeight.w900)),
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.primarySoft,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: const Icon(Icons.eco_rounded, size: 64, color: AppColors.primary),
             ),
-          ),
-          const SizedBox(width: 12),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: const Color(0xFF2E7D32),
-          ),
-        ],
+            const SizedBox(height: 24),
+            const Text(
+              'FarmCom',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.primary),
+            ),
+            Text(
+              'Version 1.0.0',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white60 : AppColors.grey500),
+            ),
+            const SizedBox(height: 40),
+            Text(
+              'FarmCom is a production-grade AgTech platform designed to bridge the rural agriculture extension gap in East Africa. Our mission is to empower smallholder farmers with AI-driven diagnostics, community-based knowledge sharing, and real-time market insights.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, height: 1.6, fontWeight: FontWeight.w500, color: isDark ? Colors.white70 : AppColors.grey800),
+            ),
+            const SizedBox(height: 48),
+            _buildFeatureInfo(Icons.auto_awesome_rounded, 'AI Diagnostics', 'Identify crop and animal diseases instantly using your camera.'),
+            const SizedBox(height: 24),
+            _buildFeatureInfo(Icons.groups_rounded, 'Community Knowledge', 'Connect with niche farming communities and verified experts.'),
+            const SizedBox(height: 24),
+            _buildFeatureInfo(Icons.bar_chart_rounded, 'Market Pulse', 'Access real-time price trends for local agricultural products.'),
+            const SizedBox(height: 60),
+            const Divider(),
+            const SizedBox(height: 20),
+            Text(
+              '© 2026 FarmCom Technologies',
+              style: TextStyle(fontSize: 12, color: AppColors.grey400, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildFeatureInfo(IconData icon, String title, String desc) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: AppColors.primary, size: 24),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+              const SizedBox(height: 4),
+              Text(desc, style: const TextStyle(fontSize: 13, height: 1.4)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

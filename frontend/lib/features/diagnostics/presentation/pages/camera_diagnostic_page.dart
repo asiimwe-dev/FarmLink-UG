@@ -81,9 +81,9 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color ?? Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -113,7 +113,7 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
                 const SizedBox(width: 12),
                 const Text(
                   'Analysis Complete',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.grey900),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
                 ),
               ],
             ),
@@ -142,7 +142,7 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
             const SizedBox(height: 32),
             const Text(
               'Recommended Treatment:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.grey900),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 12),
             _buildRecommendationItem('Apply approved copper-based fungicide'),
@@ -187,7 +187,7 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.grey700),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -197,14 +197,14 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.grey50,
       appBar: AppBar(
         title: const Text('Crop Diagnostics', style: TextStyle(fontWeight: FontWeight.w900)),
-        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
         ),
       ),
@@ -243,13 +243,13 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
                       ),
                       const SizedBox(height: 24),
                       const Text(
-                        'Take a photo of the affected crop',
+                        'Capture crop image',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.grey900),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'AI will identify diseases and provide remedies',
+                      const Text(
+                        'AI will identify diseases and remedies',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: AppColors.grey500, fontWeight: FontWeight.w500),
                       ),
@@ -281,13 +281,13 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
             if (_isAnalyzing) ...[
               const SizedBox(height: 32),
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
                 ),
-
                 child: const Column(
                   children: [
                     CircularProgressIndicator(strokeWidth: 3),
@@ -303,7 +303,7 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
             const SizedBox(height: 40),
             const Text(
               'Diagnostic Tips',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.grey900),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 16),
             _buildTipItem(Icons.light_mode_rounded, 'Ensure good natural lighting'),
@@ -332,7 +332,7 @@ class _CameraDiagnosticPageState extends State<CameraDiagnosticPage> {
           Expanded(
             child: Text(
               text,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.grey700),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ),
         ],

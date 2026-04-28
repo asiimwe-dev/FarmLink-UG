@@ -85,11 +85,13 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: AppColors.grey50,
+      backgroundColor: isDark ? const Color(0xFF121212) : AppColors.grey50,
       appBar: AppBar(
         titleSpacing: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -109,9 +111,9 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'AI Assistant',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: isDark ? Colors.white : AppColors.grey900),
                 ),
                 Row(
                   children: [
@@ -124,9 +126,9 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Text(
+                    Text(
                       'Always active',
-                      style: TextStyle(fontSize: 10, color: AppColors.grey500, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 10, color: isDark ? Colors.white60 : AppColors.grey500, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -134,13 +136,6 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.info_outline_rounded),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: Column(
         children: [
@@ -155,17 +150,17 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
               },
             ),
           ),
-          _buildInputArea(),
+          _buildInputArea(isDark),
         ],
       ),
     );
   }
 
-  Widget _buildInputArea() {
+  Widget _buildInputArea(bool isDark) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 12),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, MediaQuery.of(context).padding.bottom + 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -176,24 +171,36 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
       ),
       child: Row(
         children: [
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Voice note feature coming soon!')),
+              );
+            },
+            icon: const Icon(Icons.mic_rounded, color: AppColors.primary),
+            style: IconButton.styleFrom(backgroundColor: AppColors.primarySoft),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: AppColors.grey50,
+                color: isDark ? const Color(0xFF2C2C2C) : AppColors.grey50,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.grey200),
+                border: Border.all(color: isDark ? Colors.white12 : AppColors.grey200),
               ),
               child: TextField(
                 controller: _messageController,
                 maxLines: 4,
                 minLines: 1,
-                decoration: const InputDecoration(
-                  hintText: 'Type your message...',
+                style: TextStyle(color: isDark ? Colors.white : AppColors.grey900),
+                decoration: InputDecoration(
+                  hintText: 'Ask me anything...',
+                  hintStyle: TextStyle(color: isDark ? Colors.white38 : AppColors.grey500),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
@@ -224,6 +231,7 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -247,7 +255,7 @@ class _ChatBubble extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: isUser ? AppColors.primary : Colors.white,
+                color: isUser ? AppColors.primary : (isDark ? const Color(0xFF2C2C2C) : Colors.white),
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(20),
                   topRight: const Radius.circular(20),
@@ -268,7 +276,7 @@ class _ChatBubble extends StatelessWidget {
                   Text(
                     message.text,
                     style: TextStyle(
-                      color: isUser ? Colors.white : AppColors.grey900,
+                      color: isUser ? Colors.white : (isDark ? Colors.white : AppColors.grey900),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       height: 1.4,
@@ -278,7 +286,7 @@ class _ChatBubble extends StatelessWidget {
                   Text(
                     '${message.timestamp.hour}:${message.timestamp.minute.toString().padLeft(2, '0')}',
                     style: TextStyle(
-                      color: isUser ? Colors.white.withValues(alpha: 0.6) : AppColors.grey500,
+                      color: isUser ? Colors.white.withValues(alpha: 0.6) : (isDark ? Colors.white38 : AppColors.grey500),
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                     ),

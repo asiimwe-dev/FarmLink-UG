@@ -10,6 +10,7 @@ import '../../features/community/presentation/pages/community_page.dart';
 import '../../features/profile/presentation/pages/user_profile_page.dart';
 import '../../features/field_guide/presentation/pages/field_guide_page.dart';
 import '../../features/diagnostics/presentation/pages/camera_diagnostic_page.dart';
+import '../../features/notifications/presentation/pages/notifications_page.dart';
 
 // Router provider
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -90,6 +91,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.diagnostics,
         builder: (context, state) => const CameraDiagnosticPage(),
+      ),
+
+      // Notifications route
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => const NotificationsPage(),
       ),
     ],
   );

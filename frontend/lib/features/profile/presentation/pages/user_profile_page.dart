@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/features/auth/presentation/providers/auth_provider.dart';
 import 'package:farmcom/features/settings/presentation/pages/settings_page.dart';
+import 'package:farmcom/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
 import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
-import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
 
 class UserProfilePage extends ConsumerStatefulWidget {
   const UserProfilePage({super.key});
@@ -14,51 +14,12 @@ class UserProfilePage extends ConsumerStatefulWidget {
 }
 
 class _UserProfilePageState extends ConsumerState<UserProfilePage> {
-  late TextEditingController _nameController;
-  late TextEditingController _bioController;
-  late TextEditingController _regionController;
-  late List<String> _interests;
-  bool _isEditing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final user = ref.read(authProvider).user;
-    _nameController = TextEditingController(text: user?.name ?? 'Test Farmer');
-    _bioController = TextEditingController(text: user?.bio ?? 'Passionate about sustainable coffee farming.');
-    _regionController = TextEditingController(text: user?.region ?? 'Central Uganda');
-    _interests = List.from(user?.interests ?? ['Coffee', 'Maize', 'Poultry']);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _bioController.dispose();
-    _regionController.dispose();
-    super.dispose();
-  }
-
-  void _toggleEditMode() {
-    setState(() {
-      _isEditing = !_isEditing;
-    });
-  }
-
-  void _saveProfile() {
-    setState(() {
-      _isEditing = false;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated successfully')),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider).user;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.grey50,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -67,7 +28,21 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
             pinned: true,
             elevation: 0,
             stretch: true,
-            backgroundColor: AppColors.primary,
+            scrolledUnderElevation: isDark ? 4 : 2,
+            backgroundColor: isDark ? AppColors.darkSurfaceBright : Colors.white,
+            centerTitle: true,
+            title: AnimatedOpacity(
+              opacity: 1.0,
+              duration: const Duration(milliseconds: 300),
+              child: Text(
+                user?.name ?? 'Test Farmer',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18,
+                  color: isDark ? Colors.white : AppColors.grey900,
+                ),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: const [StretchMode.zoomBackground],
               background: Container(
@@ -103,14 +78,7 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                             child: const Icon(Icons.person_rounded, size: 40, color: AppColors.primary),
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            _nameController.text,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                            ),
-                          ),
+                          // Subtitle in background
                           Text(
                             user?.phone ?? '+256 701 234 567',
                             style: TextStyle(
@@ -128,8 +96,12 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
             ),
             actions: [
               IconButton(
-                onPressed: _isEditing ? _saveProfile : _toggleEditMode,
-                icon: Icon(_isEditing ? Icons.check_circle_rounded : Icons.edit_rounded, color: Colors.white),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                  );
+                },
+                icon: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 28),
               ),
               const SizedBox(width: 8),
             ],
@@ -141,31 +113,28 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('General Information'),
+                  _buildSectionTitle('About Me', isDark),
                   const SizedBox(height: 12),
                   FarmComCard(
                     child: Column(
                       children: [
-                        _buildProfileItem(Icons.person_outline_rounded, 'Full Name', _nameController, _isEditing),
+                        _buildProfileStaticItem(Icons.info_outline_rounded, 'Bio', user?.bio ?? 'Passionate about sustainable coffee farming.'),
                         const Divider(height: 24),
-                        _buildProfileItem(Icons.info_outline_rounded, 'Bio', _bioController, _isEditing, maxLines: 2),
-                        const Divider(height: 24),
-                        _buildProfileItem(Icons.location_on_outlined, 'Region', _regionController, _isEditing),
+                        _buildProfileStaticItem(Icons.location_on_outlined, 'Region', user?.region ?? 'Central Uganda'),
                       ],
                     ),
                   ),
                   
                   const SizedBox(height: 24),
-                  _buildSectionTitle('Farming Interests'),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _interests.map((interest) => _buildInterestChip(interest)).toList(),
-                  ),
+                  _buildExpandableInterests(user?.interests ?? ['Coffee', 'Maize', 'Poultry'], isDark),
                   
                   const SizedBox(height: 32),
-                  _buildSectionTitle('Account Settings'),
+                  _buildSectionTitle('Performance & Engagement', isDark),
+                  const SizedBox(height: 12),
+                  _buildPerformanceMetrics(isDark),
+                  
+                  const SizedBox(height: 32),
+                  _buildSectionTitle('Account Settings', isDark),
                   const SizedBox(height: 12),
                   FarmComCard(
                     padding: EdgeInsets.zero,
@@ -202,19 +171,48 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, bool isDark) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w800,
-        color: AppColors.grey900,
+        color: isDark ? Colors.white : AppColors.grey900,
         letterSpacing: 0.5,
       ),
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String label, TextEditingController controller, bool isEditing, {int maxLines = 1}) {
+  Widget _buildExpandableInterests(List<String> interests, bool isDark) {
+    return FarmComCard(
+      padding: EdgeInsets.zero,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          title: Text(
+            'Farming Interests',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: isDark ? Colors.white : AppColors.grey900,
+            ),
+          ),
+          leading: const Icon(Icons.favorite_outline_rounded, color: AppColors.primary),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          expandedAlignment: Alignment.topLeft,
+          children: [
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: interests.map((interest) => _buildInterestChip(interest)).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileStaticItem(IconData icon, String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -229,22 +227,10 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.grey500, letterSpacing: 0.5),
               ),
               const SizedBox(height: 4),
-              if (isEditing)
-                TextField(
-                  controller: controller,
-                  maxLines: maxLines,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 8),
-                    border: UnderlineInputBorder(),
-                  ),
-                )
-              else
-                Text(
-                  controller.text,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.grey900),
-                ),
+              Text(
+                value,
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
             ],
           ),
         ),
@@ -268,7 +254,7 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
   }
 
   Widget _buildActionTile({required IconData icon, required String title, required VoidCallback onTap, bool isDestructive = false}) {
-    final color = isDestructive ? AppColors.error : AppColors.grey900;
+    final color = isDestructive ? AppColors.error : (Theme.of(context).brightness == Brightness.dark ? Colors.white : AppColors.grey900);
     return ListTile(
       onTap: onTap,
       leading: Icon(icon, color: color, size: 22),
@@ -301,6 +287,183 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPerformanceMetrics(bool isDark) {
+    // Mock performance data - will be replaced with real data from backend
+    final metrics = [
+      {
+        'title': 'Total Posts',
+        'value': '24',
+        'icon': Icons.article_rounded,
+        'color': AppColors.primary,
+        'subtitle': 'Shared insights'
+      },
+      {
+        'title': 'Engagement Rate',
+        'value': '8.5%',
+        'icon': Icons.trending_up_rounded,
+        'color': AppColors.success,
+        'subtitle': 'This week'
+      },
+      {
+        'title': 'Community Score',
+        'value': '92',
+        'icon': Icons.star_rounded,
+        'color': AppColors.warning,
+        'subtitle': '/100'
+      },
+      {
+        'title': 'Followers',
+        'value': '156',
+        'icon': Icons.people_rounded,
+        'color': AppColors.tertiary,
+        'subtitle': 'Community members'
+      },
+    ];
+
+    return Column(
+      children: [
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          children: List.generate(
+            metrics.length,
+            (index) {
+              final metric = metrics[index];
+              return FarmComCard(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: (metric['color'] as Color).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        metric['icon'] as IconData,
+                        color: metric['color'] as Color,
+                        size: 20,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      metric['value'] as String,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : AppColors.grey900,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      metric['title'] as String,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white70 : AppColors.grey600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      metric['subtitle'] as String,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: isDark ? Colors.white54 : AppColors.grey500,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+        FarmComCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.insights_rounded, color: AppColors.primary, size: 20),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Activity Overview',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : AppColors.grey900,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildActivityStat('Posts This Month', '8', '↑ 2 from last month', AppColors.primary, isDark),
+              const SizedBox(height: 12),
+              _buildActivityStat('Community Interactions', '34', '↑ Active in 5 communities', AppColors.success, isDark),
+              const SizedBox(height: 12),
+              _buildActivityStat('Diagnostics Used', '3', 'Last used: 2 days ago', AppColors.tertiary, isDark),
+              const SizedBox(height: 12),
+              _buildActivityStat('Helpful Answers', '12', 'Upvoted by community', AppColors.warning, isDark),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActivityStat(String label, String value, String detail, Color color, bool isDark) {
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white : AppColors.grey900,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                detail,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? Colors.white54 : AppColors.grey500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }

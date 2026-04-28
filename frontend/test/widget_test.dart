@@ -12,7 +12,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that we are on the dashboard page
-    expect(find.text('Hello, Gilbert!'), findsOneWidget);
+    // The default name in AuthNotifier for kDebugMode is "Test Farmer"
+    expect(find.textContaining('Hello,'), findsOneWidget);
+    expect(find.textContaining('Test Farmer'), findsOneWidget);
     
     // Check for "My Communities" section
     expect(find.text('My Communities'), findsOneWidget);

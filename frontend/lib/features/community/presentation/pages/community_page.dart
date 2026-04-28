@@ -10,8 +10,9 @@ class CommunityPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.grey50,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -19,21 +20,24 @@ class CommunityPage extends ConsumerWidget {
             floating: false,
             pinned: true,
             elevation: 0,
-            backgroundColor: AppColors.primary,
+            scrolledUnderElevation: isDark ? 4 : 2,
+            backgroundColor: isDark ? AppColors.darkSurfaceBright : Colors.white,
             flexibleSpace: FlexibleSpaceBar(
-              title: const Text(
-                'Explore Communities',
+              title: Text(
+                'Community Network',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: isDark ? Colors.white : Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
               background: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primaryDark, AppColors.primary],
+                    colors: isDark
+                        ? [AppColors.primaryDark.withValues(alpha: 0.8), AppColors.primary.withValues(alpha: 0.8)]
+                        : [AppColors.primaryDark, AppColors.primary],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -52,13 +56,15 @@ class CommunityPage extends ConsumerWidget {
                     hintText: 'Search communities (e.g. Coffee, Poultry)',
                     prefixIcon: Icon(Icons.search_rounded, color: AppColors.primary),
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Recommended for you',
+                  const SizedBox(height: 32),
+                  
+                  // ============ My Communities ============
+                  Text(
+                    'My Communities',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.grey900,
+                      color: isDark ? Colors.white : AppColors.grey900,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -66,8 +72,10 @@ class CommunityPage extends ConsumerWidget {
                     title: 'Coffee Farmers Uganda',
                     members: '1.2k',
                     lastPost: 'Best fertilizers for Robusta?',
-                    color: Colors.brown.shade400,
+                    color: const Color(0xFF6D4C41),
                     icon: Icons.coffee_rounded,
+                    isDark: isDark,
+                    isMember: true,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -81,11 +89,46 @@ class CommunityPage extends ConsumerWidget {
                     },
                   ),
                   _ForumTile(
+                    title: 'Poultry & Layers',
+                    members: '2.1k',
+                    lastPost: 'Vaccination schedule for new layers',
+                    color: const Color(0xFFFB8C00),
+                    icon: Icons.egg_rounded,
+                    isDark: isDark,
+                    isMember: true,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const CommunityChatPage(
+                            communityName: 'Poultry Network',
+                            communityId: 'poultry_ug',
+                            members: '2.1k',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // ============ Recommended for you ============
+                  Text(
+                    'Recommended for you',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : AppColors.grey900,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _ForumTile(
                     title: 'Maize Growers Network',
                     members: '850',
                     lastPost: 'Armyworm outbreak in Gulu district',
-                    color: Colors.yellow.shade800,
+                    color: const Color(0xFFFBC02D),
                     icon: Icons.agriculture_rounded,
+                    isDark: isDark,
+                    isMember: false,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -99,31 +142,59 @@ class CommunityPage extends ConsumerWidget {
                     },
                   ),
                   _ForumTile(
-                    title: 'Poultry & Layers',
-                    members: '2.1k',
-                    lastPost: 'Vaccination schedule for new layers',
-                    color: Colors.orange.shade600,
-                    icon: Icons.egg_rounded,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const CommunityChatPage(
-                            communityName: 'Poultry Network',
-                            communityId: 'poultry_ug',
-                            members: '2.1k',
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  _ForumTile(
                     title: 'Dairy Excellence',
                     members: '420',
                     lastPost: 'Increasing milk yield in dry season',
                     color: Colors.blue.shade400,
                     icon: Icons.water_drop_rounded,
+                    isDark: isDark,
+                    isMember: false,
                     onTap: () {},
                   ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // ============ Trending ============
+                  Text(
+                    'Trending Communities',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : AppColors.grey900,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _ForumTile(
+                    title: 'Fish Farming Collective',
+                    members: '680',
+                    lastPost: 'Pond preparation for tilapia breeding',
+                    color: Colors.cyan.shade400,
+                    icon: Icons.water_rounded,
+                    isDark: isDark,
+                    isMember: false,
+                    onTap: () {},
+                  ),
+                  _ForumTile(
+                    title: 'Organic Farming Advocates',
+                    members: '1.5k',
+                    lastPost: 'Composting techniques & soil health',
+                    color: Colors.green.shade400,
+                    icon: Icons.eco_rounded,
+                    isDark: isDark,
+                    isMember: false,
+                    onTap: () {},
+                  ),
+                  _ForumTile(
+                    title: 'Bee Keeping Society',
+                    members: '390',
+                    lastPost: 'Honey harvesting season preparations',
+                    color: Colors.amber.shade600,
+                    icon: Icons.bug_report_rounded,
+                    isDark: isDark,
+                    isMember: false,
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -140,6 +211,8 @@ class _ForumTile extends StatelessWidget {
   final String lastPost;
   final Color color;
   final IconData icon;
+  final bool isDark;
+  final bool isMember;
   final VoidCallback onTap;
 
   const _ForumTile({
@@ -148,6 +221,8 @@ class _ForumTile extends StatelessWidget {
     required this.lastPost,
     required this.color,
     required this.icon,
+    required this.isDark,
+    required this.isMember,
     required this.onTap,
   });
 
@@ -164,7 +239,7 @@ class _ForumTile extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
+                color: color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(icon, color: color, size: 28),
@@ -191,7 +266,7 @@ class _ForumTile extends StatelessWidget {
                       Expanded(
                         child: Text(
                           lastPost,
-                          style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                          style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: isDark ? Colors.white70 : AppColors.grey700),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),

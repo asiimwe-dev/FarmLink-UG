@@ -9,10 +9,12 @@ class FieldGuidePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: AppColors.grey50,
+        backgroundColor: isDark ? AppColors.darkBackground : AppColors.grey50,
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar(
@@ -20,25 +22,32 @@ class FieldGuidePage extends ConsumerWidget {
               floating: false,
               pinned: true,
               elevation: 0,
-              backgroundColor: AppColors.primary,
+              scrolledUnderElevation: isDark ? 4 : 2,
+              backgroundColor: isDark ? AppColors.darkSurfaceBright : AppColors.primary,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: isDark ? Colors.white : Colors.white,
+                  size: 20,
+                ),
               ),
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text(
+                title: Text(
                   'Field Guide',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
                 background: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [AppColors.primaryDark, AppColors.primary],
+                      colors: isDark
+                          ? [AppColors.primaryDark.withValues(alpha: 0.8), AppColors.primary.withValues(alpha: 0.8)]
+                          : [AppColors.primaryDark, AppColors.primary],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -50,18 +59,29 @@ class FieldGuidePage extends ConsumerWidget {
               pinned: true,
               delegate: _SliverAppBarDelegate(
                 Container(
-                  color: Colors.white,
-                  child: const TabBar(
-                    tabs: [
+                  color: isDark
+                      ? AppColors.darkSurfaceBright
+                      : Colors.white,
+                  child: TabBar(
+                    tabs: const [
                       Tab(text: 'Learning Center'),
                       Tab(text: 'Expert Access'),
                     ],
                     indicatorColor: AppColors.primary,
                     indicatorWeight: 3,
-                    labelColor: AppColors.primary,
-                    unselectedLabelColor: AppColors.grey500,
-                    labelStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
-                    unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                    labelColor: AppColors.primary, // Green text for selected tab
+                    unselectedLabelColor: isDark
+                        ? AppColors.darkTextTertiary
+                        : AppColors.grey600, // Darker grey in light mode
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                    dividerHeight: 0, // Remove divider for cleaner look
                   ),
                 ),
               ),
@@ -191,6 +211,8 @@ class _LearningCenter extends StatelessWidget {
 class _ExpertAccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -244,12 +266,12 @@ class _ExpertAccess extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          const Text(
+          Text(
             'How it works',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: AppColors.grey900,
+              color: isDark ? Colors.white : AppColors.grey900,
             ),
           ),
           const SizedBox(height: 20),
@@ -258,6 +280,7 @@ class _ExpertAccess extends StatelessWidget {
             title: 'Describe Your Issue',
             description: 'Provide details about your crop or animal health concerns.',
             icon: Icons.edit_note_rounded,
+            isDark: isDark,
           ),
           const SizedBox(height: 20),
           _StepItem(
@@ -265,6 +288,7 @@ class _ExpertAccess extends StatelessWidget {
             title: 'Expert Review',
             description: 'A verified agronomist reviews your case and diagnostic photos.',
             icon: Icons.rate_review_rounded,
+            isDark: isDark,
           ),
           const SizedBox(height: 20),
           _StepItem(
@@ -272,6 +296,7 @@ class _ExpertAccess extends StatelessWidget {
             title: 'Get Prescription',
             description: 'Receive a detailed treatment plan and recommended inputs.',
             icon: Icons.receipt_long_rounded,
+            isDark: isDark,
           ),
           const SizedBox(height: 40),
           FarmComButton(
@@ -292,7 +317,7 @@ class _ExpertAccess extends StatelessWidget {
                     'All experts are certified by the Ministry of Agriculture.',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.tertiaryDark,
+                      color: isDark ? Colors.white70 : AppColors.tertiaryDark,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -311,12 +336,14 @@ class _StepItem extends StatelessWidget {
   final String title;
   final String description;
   final IconData icon;
+  final bool isDark;
 
   const _StepItem({
     required this.number,
     required this.title,
     required this.description,
     required this.icon,
+    required this.isDark,
   });
 
   @override
@@ -349,10 +376,10 @@ class _StepItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.grey900,
+                  color: isDark ? Colors.white : AppColors.grey900,
                 ),
               ),
               const SizedBox(height: 4),
@@ -360,7 +387,7 @@ class _StepItem extends StatelessWidget {
                 description,
                 style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.grey600,
+                  color: isDark ? Colors.white70 : AppColors.grey600,
                   height: 1.4,
                   fontWeight: FontWeight.w500,
                 ),
