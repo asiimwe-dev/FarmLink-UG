@@ -1,0 +1,150 @@
+{
+  "@@locale": "en",
+  "appName": "FarmLink UG",
+  "@appName": {
+    "description": "Application name"
+  },
+  "appSubtitle": "Connect. Learn. Grow.",
+  "@appSubtitle": {
+    "description": "Application subtitle"
+  },
+
+  "@@section_auth": "Authentication",
+
+  "enterPhone": "Enter Phone Number",
+  "phoneHint": "+256 700 123 456",
+  "sendOTP": "Send OTP",
+  "verifyOTP": "Verify OTP",
+  "enterOTP": "Enter 6-digit OTP",
+  "otpSent": "OTP sent to",
+  "resendOTP": "Resend OTP",
+  "resendIn": "Resend in",
+  "logout": "Logout",
+  "invalidPhone": "Invalid phone number",
+  "invalidOTP": "Invalid OTP",
+
+  "@@section_navigation": "Navigation",
+
+  "home": "Home",
+  "community": "Community",
+  "fieldGuide": "Field Guide",
+  "diagnostics": "AI Camera",
+  "profile": "Profile",
+
+  "@@section_community": "Community",
+
+  "newPost": "New Post",
+  "createPost": "Create Post",
+  "noPostsYet": "No posts yet",
+  "likePost": "Like",
+  "comment": "Comment",
+  "share": "Share",
+  "offline": "Offline",
+  "syncing": "Syncing...",
+  "syncError": "Sync failed",
+  "cloudPending": "Cloud Pending",
+  "cloudSynced": "Cloud Synced",
+  "syncStatus": "Sync Status",
+  "savedOffline": "Saved Offline",
+  "discussions": "Discussions",
+  "marketPrices": "Market Prices",
+  "expertTips": "Expert Tips",
+  "communityNetwork": "Community Network",
+
+  "@@section_verification": "Verification",
+
+  "verified": "Verified",
+  "agronomist": "Agronomist",
+  "verifiedTrader": "Verified Trader",
+  "verificationBadge": "Verified {status}",
+  "@verificationBadge": {
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "Agronomist"
+      }
+    }
+  },
+
+  "@@section_fieldguide": "Field Guide",
+
+  "searchCrops": "Search crops...",
+  "diseases": "Diseases",
+  "symptoms": "Symptoms",
+  "treatment": "Treatment",
+  "tips": "Growing Tips",
+  "noCropsFound": "No crops found",
+
+  "@@section_diagnostics": "Diagnostics",
+
+  "takeCameraPhoto": "Take Photo",
+  "pickFromGallery": "Pick from Gallery",
+  "analyzing": "Analyzing...",
+  "diseaseDetected": "Disease Detected",
+  "plantLooksHealthy": "Plant looks healthy!",
+  "confidence": "Confidence",
+  "remedy": "Recommended Treatment",
+  "confidenceLevel": "{percentage}% Confidence",
+  "@confidenceLevel": {
+    "placeholders": {
+      "percentage": {
+        "type": "int",
+        "example": "87"
+      }
+    }
+  },
+  "lowConfidence": "Low Confidence - Below 85%",
+  "highConfidence": "High Confidence - Above 85%",
+  "askExpert": "Ask a Human Expert",
+  "askExpertDescription": "This diagnosis has low confidence. Would you like to consult with a verified agronomist?",
+  "consultantFee": "Consultation Fee: {amount} UGX",
+  "@consultantFee": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "50,000"
+      }
+    }
+  },
+
+  "@@section_payments": "Payments",
+
+  "initiatePayment": "Initiate Payment",
+  "enterAmount": "Enter Amount",
+  "usd": "USD",
+  "ugx": "UGX",
+  "paymentSuccess": "Payment Successful",
+  "paymentFailed": "Payment Failed",
+  "transactionHistory": "Transaction History",
+  "noTransactions": "No transactions yet",
+
+  "@@section_common": "Common",
+
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "submit": "Submit",
+  "close": "Close",
+  "back": "Back",
+  "next": "Next",
+  "skip": "Skip",
+  "done": "Done",
+  "search": "Search",
+  "filter": "Filter",
+  "noConnection": "No internet connection",
+  "offlineMode": "Offline Mode - Changes will sync when online",
+  "tryAgain": "Try Again",
+
+  "@@section_time_greeting": "Time-based Greetings",
+
+  "goodMorning": "Good Morning",
+  "goodAfternoon": "Good Afternoon",
+  "goodEvening": "Good Evening",
+  "goodNight": "Good Night"
+}

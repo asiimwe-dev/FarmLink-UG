@@ -1,5 +1,12 @@
 import 'package:equatable/equatable.dart';
 
+/// Verification status for users
+enum VerificationStatus {
+  unverified,
+  agronomist,
+  verifiedTrader,
+}
+
 /// User entity - represents a farmer in FarmLink UG
 class User extends Equatable {
   final String id;
@@ -12,6 +19,7 @@ class User extends Equatable {
   final bool isLoggedIn;
   final String? region; // e.g., "Mt. Elgon", "Central Uganda"
   final List<String> interests; // e.g., ["Coffee", "Maize"]
+  final VerificationStatus verificationStatus;
 
   const User({
     required this.id,
@@ -24,6 +32,7 @@ class User extends Equatable {
     required this.isLoggedIn,
     this.region,
     this.interests = const [],
+    this.verificationStatus = VerificationStatus.unverified,
   });
 
   /// Copy with modifications
@@ -38,6 +47,7 @@ class User extends Equatable {
     bool? isLoggedIn,
     String? region,
     List<String>? interests,
+    VerificationStatus? verificationStatus,
   }) {
     return User(
       id: id ?? this.id,
@@ -50,6 +60,7 @@ class User extends Equatable {
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       region: region ?? this.region,
       interests: interests ?? this.interests,
+      verificationStatus: verificationStatus ?? this.verificationStatus,
     );
   }
 
@@ -65,5 +76,6 @@ class User extends Equatable {
         isLoggedIn,
         region,
         interests,
+        verificationStatus,
       ];
 }

@@ -1,3 +1,5 @@
+import 'package:farmlink_ug/core/domain/repositories/icommunity_repository.dart';
+
 /// Diagnostics (AI Camera) repository contract
 /// Implemented by features/diagnostics/data/repositories/diagnostics_repository.dart
 abstract class IDiagnosticsRepository {
@@ -53,6 +55,8 @@ class Diagnosis {
   final String? apiReference; // Plant.id reference
   final bool isPending; // Not yet synced
   final bool isSynced;
+  final SyncStatus syncStatus;
+  final String? syncErrorMessage;
 
   Diagnosis({
     required this.id,
@@ -65,7 +69,40 @@ class Diagnosis {
     this.apiReference,
     this.isPending = false,
     this.isSynced = false,
+    this.syncStatus = SyncStatus.synced,
+    this.syncErrorMessage,
   });
+
+  /// Copy with modifications
+  Diagnosis copyWith({
+    String? id,
+    String? userId,
+    String? imagePath,
+    String? imageThumbnailUrl,
+    List<DiseaseDetection>? detections,
+    String? plantHealth,
+    DateTime? analyzedAt,
+    String? apiReference,
+    bool? isPending,
+    bool? isSynced,
+    SyncStatus? syncStatus,
+    String? syncErrorMessage,
+  }) {
+    return Diagnosis(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      imagePath: imagePath ?? this.imagePath,
+      imageThumbnailUrl: imageThumbnailUrl ?? this.imageThumbnailUrl,
+      detections: detections ?? this.detections,
+      plantHealth: plantHealth ?? this.plantHealth,
+      analyzedAt: analyzedAt ?? this.analyzedAt,
+      apiReference: apiReference ?? this.apiReference,
+      isPending: isPending ?? this.isPending,
+      isSynced: isSynced ?? this.isSynced,
+      syncStatus: syncStatus ?? this.syncStatus,
+      syncErrorMessage: syncErrorMessage ?? this.syncErrorMessage,
+    );
+  }
 }
 
 /// Single disease detection from the AI model

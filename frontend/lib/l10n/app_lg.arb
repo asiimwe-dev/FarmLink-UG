@@ -1,0 +1,150 @@
+{
+  "@@locale": "lg",
+  "appName": "FarmLink UG",
+  "@appName": {
+    "description": "Application name"
+  },
+  "appSubtitle": "Kuwanya. Okukunda. Okukula.",
+  "@appSubtitle": {
+    "description": "Application subtitle in Luganda"
+  },
+
+  "@@section_auth": "Okukakasa",
+
+  "enterPhone": "Wakati Nomeri ya Simu",
+  "phoneHint": "+256 700 123 456",
+  "sendOTP": "Teekawo OTP",
+  "verifyOTP": "Kakasa OTP",
+  "enterOTP": "Wakati OTP ya digiti 6",
+  "otpSent": "OTP eweddeko ku",
+  "resendOTP": "Teeka OTP Oluvanyuma",
+  "resendIn": "Teeka Oluvanyuma mu",
+  "logout": "Simu Ku Ndawulo",
+  "invalidPhone": "Nomeri ya simu etali ntuufu",
+  "invalidOTP": "OTP etali ntuufu",
+
+  "@@section_navigation": "Okuwanyisiza",
+
+  "home": "Awamu",
+  "community": "Okwawukana",
+  "fieldGuide": "Omutegeeko Gw'Ennimiro",
+  "diagnostics": "Kamala ya AI",
+  "profile": "Essomo Lyange",
+
+  "@@section_community": "Okwawukana",
+
+  "newPost": "Post Empya",
+  "createPost": "Kola Post",
+  "noPostsYet": "Tewali Posts naffuu",
+  "likePost": "Gwanya",
+  "comment": "Kulaga",
+  "share": "Okukabisaamu",
+  "offline": "Offline",
+  "syncing": "Okukwataganya...",
+  "syncError": "Okukwataganya Kwajjukiza",
+  "cloudPending": "Cloud Ekubidde",
+  "cloudSynced": "Cloud Ekwataganya",
+  "syncStatus": "Embeera y'Okukwataganya",
+  "savedOffline": "Ligidde Offline",
+  "discussions": "Okukubaganya",
+  "marketPrices": "Emiwendo gy'Masale",
+  "expertTips": "Amagezi ga Bamanyi",
+  "communityNetwork": "Kitaawe ky'Okwawukana",
+
+  "@@section_verification": "Okukakasa",
+
+  "verified": "Kakasiddwa",
+  "agronomist": "Omuyizi w'Ennimiro",
+  "verifiedTrader": "Omwanyi Kakasiddwa",
+  "verificationBadge": "{status} Kakasiddwa",
+  "@verificationBadge": {
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "Omuyizi w'Ennimiro"
+      }
+    }
+  },
+
+  "@@section_fieldguide": "Omutegeeko",
+
+  "searchCrops": "Kunoonya ensimbi...",
+  "diseases": "Ennoyyi",
+  "symptoms": "Obubonero",
+  "treatment": "Okukubaganya",
+  "tips": "Amagezi ag'Okukulima",
+  "noCropsFound": "Tewali ensimbi nziziddwa",
+
+  "@@section_diagnostics": "Okukola Okunnyonnyola",
+
+  "takeCameraPhoto": "Fota",
+  "pickFromGallery": "Piki mu Gallery",
+  "analyzing": "Okwekenneza...",
+  "diseaseDetected": "Ennoyyi Eyagerwako",
+  "plantLooksHealthy": "Omubiri gwo guli mulamu!",
+  "confidence": "Okwesigira",
+  "remedy": "Okukubaganya Okukutegeeza",
+  "confidenceLevel": "{percentage}% Okwesigira",
+  "@confidenceLevel": {
+    "placeholders": {
+      "percentage": {
+        "type": "int",
+        "example": "87"
+      }
+    }
+  },
+  "lowConfidence": "Okwesigira Kutaliiko - Okukira 85%",
+  "highConfidence": "Okwesigira Okukwata - Ekisinga 85%",
+  "askExpert": "Kiba Eyamuyizi",
+  "askExpertDescription": "Okunnyonnyola kuno kuna okwesigira kutaliiko. Oyagala okukuba n'omuyizi omukakasa?",
+  "consultantFee": "Emiwendo gy'Okukuba: {amount} UGX",
+  "@consultantFee": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "50,000"
+      }
+    }
+  },
+
+  "@@section_payments": "Ssente",
+
+  "initiatePayment": "Tandika Okukwata",
+  "enterAmount": "Wakati Namba",
+  "usd": "USD",
+  "ugx": "UGX",
+  "paymentSuccess": "Okukwata Okukola Bulungi",
+  "paymentFailed": "Okukwata Kwajjukiza",
+  "transactionHistory": "Embeera y'Okukwata",
+  "noTransactions": "Tewali Transactions naffuu",
+
+  "@@section_common": "Ekyetaagisa",
+
+  "loading": "Okukwata...",
+  "error": "Njiya",
+  "success": "Bulungi",
+  "retry": "Meka Oluvanyuma",
+  "cancel": "Jjukira",
+  "confirm": "Kakasa",
+  "save": "Ligitaawo",
+  "delete": "Singa",
+  "edit": "Kwata Oluvanyuma",
+  "submit": "Teekawo",
+  "close": "Liimu",
+  "back": "Eddirira",
+  "next": "Okulimu",
+  "skip": "Yeegawo",
+  "done": "Kumaliriziddwa",
+  "search": "Kunoonya",
+  "filter": "Okwawula",
+  "noConnection": "Tewali Intaneti",
+  "offlineMode": "Embeera ya Offline - Ekikwata kilikwataganya ng'Intaneti",
+  "tryAgain": "Meka Oluvanyuma",
+
+  "@@section_time_greeting": "Okukubaganya kwa Wakati",
+
+  "goodMorning": "Wasuubire Bulungi",
+  "goodAfternoon": "Wasuubire Bulungi Kwakati",
+  "goodEvening": "Wasuubire Bulungi Akasibe",
+  "goodNight": "Tulire Bulungi"
+}

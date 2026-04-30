@@ -1,3 +1,13 @@
+import 'package:farmlink_ug/core/domain/entities/user.dart';
+
+/// Sync status for posts and comments
+enum SyncStatus {
+  synced,       // Successfully synced to cloud
+  pending,      // Waiting to be synced
+  syncing,      // Currently syncing
+  failed,       // Failed to sync
+}
+
 /// Community/Forum repository contract
 /// Implemented by features/community/data/repositories/community_repository.dart
 abstract class ICommunityRepository {
@@ -70,6 +80,9 @@ class Post {
   final int commentCount;
   final bool isPending; // Not yet synced
   final bool isLiked;
+  final SyncStatus syncStatus;
+  final String? syncErrorMessage;
+  final VerificationStatus? authorVerificationStatus;
 
   Post({
     required this.id,
@@ -85,7 +98,49 @@ class Post {
     this.commentCount = 0,
     this.isPending = false,
     this.isLiked = false,
+    this.syncStatus = SyncStatus.synced,
+    this.syncErrorMessage,
+    this.authorVerificationStatus,
   });
+
+  /// Copy with modifications
+  Post copyWith({
+    String? id,
+    String? topicId,
+    String? userId,
+    String? userName,
+    String? title,
+    String? content,
+    List<String>? imageUrls,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? likes,
+    int? commentCount,
+    bool? isPending,
+    bool? isLiked,
+    SyncStatus? syncStatus,
+    String? syncErrorMessage,
+    VerificationStatus? authorVerificationStatus,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      topicId: topicId ?? this.topicId,
+      userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      imageUrls: imageUrls ?? this.imageUrls,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      likes: likes ?? this.likes,
+      commentCount: commentCount ?? this.commentCount,
+      isPending: isPending ?? this.isPending,
+      isLiked: isLiked ?? this.isLiked,
+      syncStatus: syncStatus ?? this.syncStatus,
+      syncErrorMessage: syncErrorMessage ?? this.syncErrorMessage,
+      authorVerificationStatus: authorVerificationStatus ?? this.authorVerificationStatus,
+    );
+  }
 }
 
 /// Forum comment entity
@@ -99,6 +154,9 @@ class Comment {
   final DateTime? updatedAt;
   final int likes;
   final bool isPending; // Not yet synced
+  final SyncStatus syncStatus;
+  final String? syncErrorMessage;
+  final VerificationStatus? authorVerificationStatus;
 
   Comment({
     required this.id,
@@ -110,7 +168,41 @@ class Comment {
     this.updatedAt,
     this.likes = 0,
     this.isPending = false,
+    this.syncStatus = SyncStatus.synced,
+    this.syncErrorMessage,
+    this.authorVerificationStatus,
   });
+
+  /// Copy with modifications
+  Comment copyWith({
+    String? id,
+    String? postId,
+    String? userId,
+    String? userName,
+    String? content,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? likes,
+    bool? isPending,
+    SyncStatus? syncStatus,
+    String? syncErrorMessage,
+    VerificationStatus? authorVerificationStatus,
+  }) {
+    return Comment(
+      id: id ?? this.id,
+      postId: postId ?? this.postId,
+      userId: userId ?? this.userId,
+      userName: userName ?? this.userName,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      likes: likes ?? this.likes,
+      isPending: isPending ?? this.isPending,
+      syncStatus: syncStatus ?? this.syncStatus,
+      syncErrorMessage: syncErrorMessage ?? this.syncErrorMessage,
+      authorVerificationStatus: authorVerificationStatus ?? this.authorVerificationStatus,
+    );
+  }
 }
 
 /// Forum topic/community entity

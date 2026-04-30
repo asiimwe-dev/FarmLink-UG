@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:farmlink_ug/core/infrastructure/storage/isar_provider.dart';  // Disabled for AGP 8.x compatibility
 import 'package:farmlink_ug/core/routing/router_provider.dart';
 import 'package:farmlink_ug/core/theme/app_theme.dart';
@@ -12,9 +13,9 @@ void main() async {
   
   // Initialize Isar (Stubbed)
   // await initializeIsar();
-  
+
   Logger.i('🚀 Starting FarmLink UG Mobile...');
-  
+
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -37,6 +38,17 @@ class MyApp extends ConsumerWidget {
       themeMode: themeState.themeMode,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
+      // Localization setup
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('lg', ''),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      locale: const Locale('en', ''),
     );
   }
 }
