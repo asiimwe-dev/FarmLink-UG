@@ -24,7 +24,7 @@ In Uganda, **one agricultural extension worker serves over 2,500 farmers**. Crit
 
 ### How It Works
 
-1. **Offline-First Architecture** — Farmers access the app from any location, even without internet. All data (field guides, community discussions, diagnostic history) is stored locally.
+1. **Offline-First Architecture** — Farmers access the app from any location, even without internet. All data (explore guides, community discussions, diagnostic history) is stored locally.
 
 2. **Hyper-Local Communities** — Farmers are organized into crop-specific communities (Coffee, Maize, Poultry, etc.) to ensure knowledge is contextually relevant.
 

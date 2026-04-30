@@ -8,7 +8,7 @@ class AppRoutes {
   // Main app routes (shell routes)
   static const String home = '/home';
   static const String community = '/community';
-  static const String fieldGuide = '/field-guide';
+  static const String explore = '/explore';
   static const String diagnostics = '/diagnostics';
   static const String profile = '/profile';
   static const String aiChat = '/ai-chat';

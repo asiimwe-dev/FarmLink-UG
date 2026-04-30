@@ -48,86 +48,80 @@ class _CommunityCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      width: 130,
-      margin: const EdgeInsets.only(right: 16, bottom: 8, top: 4),
+      width: 140, // Increased for better text breathing room
+      margin: const EdgeInsets.only(right: 12, bottom: 8, top: 4),
       child: FarmComCard(
         padding: EdgeInsets.zero,
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: isDark ? AppColors.darkSurfaceBright : Colors.white,
         border: !isDark
             ? Border(top: BorderSide(color: color, width: 3))
-            : null, // Colored top border in light mode
+            : null,
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CommunityChatPage(
-                communityName: name,
-                communityId: name.toLowerCase(),
-                members: '1.5k',
-              ),
-            ),
+          context.push(
+            AppRoutes.communityDetail.replaceAll(':id', name.toLowerCase()),
+            extra: {
+              'name': name,
+              'members': '1.5k',
+            },
           );
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Stack(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: isDark ? 0.2 : 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(icon, color: color, size: 28),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: isDark ? 0.2 : 0.1),
+                    shape: BoxShape.circle,
                   ),
-                  if (newPosts > 0)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: AppColors.error,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                        child: Text(
-                          newPosts.toString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 8,
-                            fontWeight: FontWeight.w900,
-                          ),
+                  child: Icon(icon, color: color, size: 24),
+                ),
+                if (newPosts > 0)
+                  Positioned(
+                    right: -4,
+                    top: -4,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: AppColors.error,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: isDark ? AppColors.darkSurfaceBright : Colors.white, width: 2),
+                      ),
+                      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                      child: Text(
+                        newPosts.toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
-                  color: isDark ? Colors.white : color,
-                ),
+            const SizedBox(height: 12),
+            Text(
+              name,
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                AppTypography.titleSmall,
+                color: isDark ? Colors.white : color.withValues(alpha: 0.8),
+                letterSpacing: 0.3,
               ),
             ),
             const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
-              child: Text(
-                'Active Now',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: isDark ? Colors.white60 : AppColors.grey500,
-                  fontWeight: FontWeight.w600,
-                ),
+            Text(
+              'Active Now',
+              style: TextStyle(
+                AppTypography.captionSmall,
+                color: isDark ? Colors.white38 : AppColors.grey500,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
               ),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:farmcom/core/theme/app_typography.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
 import 'package:farmcom/core/presentation/widgets/farmcom_button.dart';
@@ -142,7 +143,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
             const SizedBox(height: 20),
             FarmComTextField(labelText: 'Region', controller: _regionController, prefixIcon: const Icon(Icons.location_on_outlined)),
             const SizedBox(height: 32),
-            Text('Farming Interests', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900)),
+            Text('Farming Interests', style: AppTypography.titleMedium.copyWith( fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900)),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -163,7 +164,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
               }).toList(),
             ),
             const SizedBox(height: 24),
-            Text('Your Interests', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900)),
+            Text('Your Interests', style: AppTypography.titleSmall.copyWith( fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900)),
             const SizedBox(height: 12),
             if (_userInterests.isNotEmpty)
               Wrap(
@@ -185,9 +186,9 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 }).toList(),
               )
             else
-              Text('No interests selected yet', style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : AppColors.grey500, fontStyle: FontStyle.italic)),
+              Text('No interests selected yet', style: AppTypography.labelMedium.copyWith( color: isDark ? Colors.white54 : AppColors.grey500, fontStyle: FontStyle.italic)),
             const SizedBox(height: 20),
-            Text('Add Custom Interest', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900)),
+            Text('Add Custom Interest', style: AppTypography.titleSmall.copyWith( fontWeight: FontWeight.w800, color: isDark ? Colors.white : AppColors.grey900)),
             const SizedBox(height: 12),
             Row(
               children: [

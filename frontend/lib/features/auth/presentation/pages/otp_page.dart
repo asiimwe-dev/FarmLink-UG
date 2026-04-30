@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:farmcom/core/theme/app_typography.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/core/constants/app_strings.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
@@ -169,7 +170,7 @@ class _OTPPageState extends ConsumerState<OTPPage> {
               'By continuing, you agree to our Terms and Conditions',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
+                AppTypography.labelMedium,
                 color: AppColors.grey500,
               ),
             ),
@@ -232,7 +233,7 @@ class _OTPPageState extends ConsumerState<OTPPage> {
             controller: otpController,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 32,
+              AppTypography.displaySmall,
               fontWeight: FontWeight.w900,
               letterSpacing: 8,
               color: AppColors.primary,

@@ -55,7 +55,7 @@ class AllCommunitiesPage extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16, top: 8),
       child: Text(
         title,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: 0.5, color: isDark ? Colors.white70 : AppColors.grey900),
+        style: TextStyle(AppTypography.titleMedium, fontWeight: FontWeight.w800, letterSpacing: 0.5, color: isDark ? Colors.white70 : AppColors.grey900),
       ),
     );
   }
@@ -89,8 +89,8 @@ class AllCommunitiesPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
-                  Text(members, style: const TextStyle(color: AppColors.grey500, fontSize: 12, fontWeight: FontWeight.w600)),
+                  Text(name, style: TextStyle(fontWeight: FontWeight.w800, AppTypography.titleSmall, color: isDark ? Colors.white : AppColors.grey900)),
+                  Text(members, style: const AppTypography.labelMedium.copyWith(color: AppColors.grey500, fontWeight: FontWeight.w600)),
                 ],
               ),
             ),

@@ -44,10 +44,10 @@ class AppColors {
   // ============ Light Mode: Neutral Colors ============
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
-  static const Color grey50 = Color(0xFFFAFAFA);
-  static const Color grey100 = Color(0xFFF5F5F5);
-  static const Color grey200 = Color(0xFFEEEEEE);
-  static const Color grey300 = Color(0xFFE0E0E0);
+  static const Color grey50 = Color(0xFFFBFBFB);
+  static const Color grey100 = Color(0xFFF7F7F7);
+  static const Color grey200 = Color(0xFFF0F0F0);
+  static const Color grey300 = Color(0xFFE8E8E8);
   static const Color grey400 = Color(0xFFBDBDBD);
   static const Color grey500 = Color(0xFF9E9E9E);
   static const Color grey600 = Color(0xFF757575);
@@ -66,13 +66,13 @@ class AppColors {
   static const Color darkGrey600 = Color(0xFF757575);
 
   // ============ Light Mode: Semantic ============
-  static const Color surface = Color(0xFFFEFEFE);
-  static const Color surfaceDim = Color(0xFFEEEEEE);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceDim = Color(0xFFF0F0F0);
   static const Color surfaceBright = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF5F5F5);
+  static const Color surfaceVariant = Color(0xFFF7F7F7);
   static const Color background = Color(0xFFFFFFFF);
-  static const Color backgroundVariant = Color(0xFFF9F9F9);
-  static const Color divider = Color(0xFFEEEEEE);
+  static const Color backgroundVariant = Color(0xFFFAFAFA);
+  static const Color divider = Color(0xFFF0F0F0);
 
   // ============ Dark Mode: Semantic ============
   static const Color darkSurface = Color(0xFF121212);

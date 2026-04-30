@@ -53,6 +53,7 @@ dependencies:
   # --- AUDIO-FIRST DESIGN ---
   # record: ^4.4.0  # Disabled for AGP 8.x compatibility
   audioplayers: ^5.2.1
+  shared_preferences: ^2.5.5
 
 dependency_overrides:
   # Force AGP 8.x compatible versions for transitive dependencies

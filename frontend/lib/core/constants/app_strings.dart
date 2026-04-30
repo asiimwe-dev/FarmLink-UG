@@ -20,7 +20,7 @@ class AppStrings {
   // Navigation
   static const String home = 'Home';
   static const String community = 'Community';
-  static const String fieldGuide = 'Field Guide';
+  static const String explore = 'Explore';
   static const String diagnostics = 'AI Camera';
   static const String profile = 'Profile';
 
@@ -35,7 +35,7 @@ class AppStrings {
   static const String syncing = 'Syncing...';
   static const String syncError = 'Sync failed';
 
-  // Field Guide
+  // Explore
   static const String searchCrops = 'Search crops...';
   static const String diseases = 'Diseases';
   static const String symptoms = 'Symptoms';

@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Connectivity service to detect network status
 class ConnectivityService {
@@ -18,18 +17,3 @@ class ConnectivityService {
     return result != ConnectivityResult.none;
   }
 }
-
-// Single instance provider - prevents duplicate listeners
-final connectivityServiceProvider = Provider((ref) => ConnectivityService());
-
-// Riverpod provider for connectivity stream
-final connectivityProvider = StreamProvider<bool>((ref) {
-  final service = ref.watch(connectivityServiceProvider);
-  return service.onConnectivityChanged;
-});
-
-// Get current connectivity status
-final isOnlineProvider = FutureProvider<bool>((ref) async {
-  final service = ref.watch(connectivityServiceProvider);
-  return await service.hasInternetConnection();
-});

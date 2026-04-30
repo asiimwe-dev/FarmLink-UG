@@ -13,7 +13,7 @@ class AssetPaths {
 
   // Icons (if not using Flutter's built-in icons)
   static const String iconCommunity = 'assets/icons/community.svg';
-  static const String iconFieldGuide = 'assets/icons/field_guide.svg';
+  static const String iconExplore = 'assets/icons/explore.svg';
   static const String iconCamera = 'assets/icons/camera.svg';
   static const String iconProfile = 'assets/icons/profile.svg';
   static const String iconHome = 'assets/icons/home.svg';
@@ -31,7 +31,7 @@ class AssetPaths {
   static const List<String> requiredAssetFolders = [
     'assets/images/',
     'assets/images/community/',
-    'assets/images/field_guide/',
+    'assets/images/explore/',
     'assets/images/diagnostics/',
     'assets/images/auth/',
     'assets/icons/',
@@ -45,9 +45,9 @@ class CommunityAssets {
   static const String emptyFeed = 'assets/images/community/empty_feed.png';
 }
 
-/// Field Guide feature asset paths
-class FieldGuideAssets {
-  static const String emptyGuide = 'assets/images/field_guide/empty.png';
+/// Explore feature asset paths
+class ExploreAssets {
+  static const String emptyGuide = 'assets/images/explore/empty.png';
 }
 
 /// Diagnostics feature asset paths

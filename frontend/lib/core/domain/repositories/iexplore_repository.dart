@@ -1,6 +1,6 @@
-/// Field Guide repository contract
-/// Implemented by features/field_guide/data/repositories/field_guide_repository.dart
-abstract class IFieldGuideRepository {
+/// Explore repository contract
+/// Implemented by features/explore/data/repositories/explore_repository.dart
+abstract class IExploreRepository {
   /// Fetch all crops with disease info
   Future<List<Crop>> fetchAllCrops();
 

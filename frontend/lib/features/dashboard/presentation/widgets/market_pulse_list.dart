@@ -1,7 +1,7 @@
 part of '../pages/dashboard_page.dart';
 
 class MarketPulseList extends ConsumerWidget {
-  const MarketPulseList({super.key}) : super();
+  const MarketPulseList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +30,7 @@ class MarketPulseList extends ConsumerWidget {
     ];
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
@@ -55,9 +55,10 @@ class _MarketPriceLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trend = item['trend']!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return FarmComCard(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
         children: [
           Expanded(
@@ -67,22 +68,24 @@ class _MarketPriceLine extends StatelessWidget {
               children: [
                 Text(
                   item['crop']!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    AppTypography.titleSmall,
+                    color: isDark ? Colors.white : AppColors.grey900,
+                    letterSpacing: -0.2,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.access_time_rounded, size: 12, color: AppColors.grey500),
+                    Icon(Icons.access_time_rounded, size: 10, color: isDark ? Colors.white38 : AppColors.grey500),
                     const SizedBox(width: 4),
-                    const Text(
+                    Text(
                       'Updated 2h ago',
                       style: TextStyle(
-                        color: AppColors.grey500,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
+                        color: isDark ? Colors.white38 : AppColors.grey500,
+                        AppTypography.captionSmall,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -90,17 +93,19 @@ class _MarketPriceLine extends StatelessWidget {
               ],
             ),
           ),
-          _buildPriceColumn('BUY', item['buyPrice']!, AppColors.tertiary),
+          const SizedBox(width: 8),
+          _buildPriceColumn(context, 'BUY', item['buyPrice']!, AppColors.tertiary),
           const SizedBox(width: 12),
           _TrendIndicator(trend: trend),
           const SizedBox(width: 12),
-          _buildPriceColumn('SELL', item['sellPrice']!, AppColors.success),
+          _buildPriceColumn(context, 'SELL', item['sellPrice']!, AppColors.success),
         ],
       ),
     );
   }
 
-  Widget _buildPriceColumn(String label, String price, Color color) {
+  Widget _buildPriceColumn(BuildContext context, String label, String price, Color color) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       flex: 2,
       child: Column(
@@ -108,10 +113,10 @@ class _MarketPriceLine extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 10,
+            style: TextStyle(
+              fontSize: 9,
               fontWeight: FontWeight.w900,
-              color: AppColors.grey500,
+              color: isDark ? Colors.white38 : AppColors.grey500,
               letterSpacing: 0.5,
             ),
           ),
@@ -119,7 +124,7 @@ class _MarketPriceLine extends StatelessWidget {
           Text(
             'Shs $price',
             style: TextStyle(
-              fontSize: 13,
+              AppTypography.labelMedium,
               fontWeight: FontWeight.w900,
               color: color,
             ),
@@ -158,12 +163,12 @@ class _TrendIndicator extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(6),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
       ),
-      child: Icon(icon, color: color, size: 18),
+      child: Icon(icon, color: color, size: 16),
     );
   }
 }

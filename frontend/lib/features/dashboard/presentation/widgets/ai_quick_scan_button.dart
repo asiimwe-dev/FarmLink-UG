@@ -41,7 +41,7 @@ class AIQuickScanButton extends ConsumerWidget {
                     'AI QUICK-SCAN',
                     style: TextStyle(
                       color: AppColors.white,
-                      fontSize: 18,
+                      AppTypography.titleLarge,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 1,
                     ),
@@ -51,7 +51,7 @@ class AIQuickScanButton extends ConsumerWidget {
                     'Instantly identify crop diseases',
                     style: TextStyle(
                       color: AppColors.primarySoft,
-                      fontSize: 12,
+                      AppTypography.labelMedium,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

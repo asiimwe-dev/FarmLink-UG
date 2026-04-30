@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:farmcom/core/theme/app_typography.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
-import 'package:farmcom/core/presentation/widgets/modern_chat_bubble.dart';
+import 'package:farmcom/core/presentation/widgets/imessage_bubble.dart';
 import 'package:farmcom/core/presentation/widgets/modern_chat_input.dart';
 
 class CommunityChatPage extends StatefulWidget {
@@ -111,7 +112,7 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : AppColors.grey50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         titleSpacing: 0,
         backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
@@ -125,11 +126,15 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
           children: [
             Text(
               widget.communityName,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: isDark ? Colors.white : AppColors.grey900),
+              style: TextStyle(
+                fontSize: 16, 
+                fontWeight: FontWeight.w900, 
+                color: Theme.of(context).appBarTheme.foregroundColor,
+              ),
             ),
             Text(
               '${widget.members} members',
-              style: TextStyle(fontSize: 11, color: isDark ? Colors.white60 : AppColors.grey500, fontWeight: FontWeight.w600),
+              style: TextStyle(AppTypography.captionSmall, color: isDark ? Colors.white60 : AppColors.grey500, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -144,11 +149,11 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                return ModernChatBubble(
+                return CommunityChatBubble(
                   text: message['text'],
                   isUser: message['isMe'],
                   senderName: message['user'],
@@ -159,7 +164,7 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
               },
             ),
           ),
-          ModernChatInputArea(
+          ModernChatInput(
             controller: _messageController,
             onSend: _sendMessage,
             onAttach: () {
@@ -179,4 +184,3 @@ class _CommunityChatPageState extends State<CommunityChatPage> {
     );
   }
 }
-

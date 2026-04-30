@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
+import 'package:farmcom/core/theme/app_typography.dart';
 import 'package:farmcom/core/theme/theme_provider.dart';
 import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
 
@@ -65,11 +66,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         activeColor: AppColors.primary,
                         onChanged: (val) => themeNotifier.setFontSize(val),
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Small', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
-                          Text('Large', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                          Text(\'Small\', style: AppTypography.captionSmall.copyWith(fontWeight: FontWeight.w600)),
+                          Text('Large', style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ],
@@ -187,7 +188,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           Center(
             child: Text(
               'FarmCom v1.0.0',
-              style: TextStyle(color: AppColors.grey500, fontSize: 12, fontWeight: FontWeight.w600),
+              style: AppTypography.labelMedium.copyWith(color: AppColors.grey500, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -198,7 +199,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget _buildSectionTitle(String title, bool isDark) {
     return Text(
       title,
-      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: isDark ? Colors.white70 : AppColors.grey700, letterSpacing: 0.5),
+      style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w800, color: isDark ? Colors.white70 : AppColors.grey700, letterSpacing: 0.5),
     );
   }
 
@@ -206,21 +207,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     return Column(
       children: [
         RadioListTile<ThemeMode>(
-          title: const Text('System Default', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          title: const Text('System Default', style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600)),
           value: ThemeMode.system,
           groupValue: currentMode,
           activeColor: AppColors.primary,
           onChanged: (val) => notifier.setThemeMode(val!),
         ),
         RadioListTile<ThemeMode>(
-          title: const Text('Light Mode', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          title: const Text('Light Mode', style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600)),
           value: ThemeMode.light,
           groupValue: currentMode,
           activeColor: AppColors.primary,
           onChanged: (val) => notifier.setThemeMode(val!),
         ),
         RadioListTile<ThemeMode>(
-          title: const Text('Dark Mode', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          title: const Text('Dark Mode', style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600)),
           value: ThemeMode.dark,
           groupValue: currentMode,
           activeColor: AppColors.primary,
@@ -237,8 +238,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         decoration: BoxDecoration(color: AppColors.primarySoft, borderRadius: BorderRadius.circular(8)),
         child: Icon(icon, color: AppColors.primary, size: 20),
       ),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
-      subtitle: Text(subtitle, style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : AppColors.grey500)),
+      title: Text(title, style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.grey900),
+      subtitle: Text(subtitle, style: AppTypography.labelMedium.copyWith(color: isDark ? Colors.white60 : AppColors.grey500)),
       trailing: Switch.adaptive(
         value: value,
         activeColor: AppColors.primary,
@@ -261,7 +262,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         decoration: BoxDecoration(color: AppColors.primarySoft, borderRadius: BorderRadius.circular(8)),
         child: Icon(icon, color: AppColors.primary, size: 20),
       ),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
+      title: Text(title, style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.grey900),
       trailing: DropdownButton<String>(
         value: value,
         underline: const SizedBox(),
@@ -284,7 +285,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         decoration: BoxDecoration(color: isDark ? Colors.white10 : AppColors.grey100, borderRadius: BorderRadius.circular(8)),
         child: Icon(icon, color: isDark ? Colors.white70 : AppColors.grey700, size: 20),
       ),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: isDark ? Colors.white : AppColors.grey900)),
+      title: Text(title, style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.grey900),
       trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.grey300),
     );
   }
@@ -322,17 +323,17 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             const Text(
               'FarmCom',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.primary),
+              style: AppTypography.headlineMedium.copyWith(fontWeight: FontWeight.w900, color: AppColors.primary),
             ),
             Text(
               'Version 1.0.0',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white60 : AppColors.grey500),
+              style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600, color: isDark ? Colors.white60 : AppColors.grey500),
             ),
             const SizedBox(height: 40),
             Text(
               'FarmCom is a production-grade AgTech platform designed to bridge the rural agriculture extension gap in East Africa. Our mission is to empower smallholder farmers with AI-driven diagnostics, community-based knowledge sharing, and real-time market insights.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, height: 1.6, fontWeight: FontWeight.w500, color: isDark ? Colors.white70 : AppColors.grey800),
+              style: AppTypography.titleMedium.copyWith(height: 1.6, fontWeight: FontWeight.w500, color: isDark ? Colors.white70 : AppColors.grey800),
             ),
             const SizedBox(height: 48),
             _buildFeatureInfo(Icons.auto_awesome_rounded, 'AI Diagnostics', 'Identify crop and animal diseases instantly using your camera.'),
@@ -345,7 +346,7 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               '© 2026 FarmCom Technologies',
-              style: TextStyle(fontSize: 12, color: AppColors.grey400, fontWeight: FontWeight.w600),
+              style: AppTypography.labelMedium.copyWith(color: AppColors.grey400, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -363,9 +364,9 @@ class AboutPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+              Text(title, style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 4),
-              Text(desc, style: const TextStyle(fontSize: 13, height: 1.4)),
+              Text(desc, style: AppTypography.bodySmall.copyWith( height: 1.4)),
             ],
           ),
         ),

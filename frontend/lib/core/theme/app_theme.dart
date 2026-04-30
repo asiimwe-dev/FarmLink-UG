@@ -58,14 +58,14 @@ class AppTheme {
         scrolledUnderElevation: 1,
         centerTitle: false,
         backgroundColor: isDark ? AppColors.darkSurfaceBright : AppColors.white,
-        foregroundColor: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+        foregroundColor: isDark ? AppColors.white : AppColors.grey900,
         titleTextStyle: AppTypography.titleLarge.copyWith(
-          color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+          color: isDark ? AppColors.white : AppColors.grey900,
           fontSize: (AppTypography.titleLarge.fontSize ?? 22) * multiplier,
           fontWeight: FontWeight.w800,
         ),
         iconTheme: IconThemeData(
-          color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+          color: isDark ? AppColors.white : AppColors.grey900,
         ),
         surfaceTintColor: isDark ? AppColors.darkSurfaceBright : AppColors.white,
       ),

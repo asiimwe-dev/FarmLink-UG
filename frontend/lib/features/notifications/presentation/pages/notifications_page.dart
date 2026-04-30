@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:farmcom/core/theme/app_typography.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
 import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
@@ -33,7 +34,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     },
     {
       'id': 3,
-      'title': 'Field Guide Recommendation',
+      'title': 'Explore Recommendation',
       'message': 'New guide available: Managing soil nutrients during rainy season',
       'timestamp': DateTime.now().subtract(const Duration(hours: 12)),
       'icon': Icons.library_books_rounded,
@@ -143,12 +144,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   const SizedBox(height: 16),
                   Text(
                     'No Notifications',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.grey900),
+                    style: AppTypography.titleLarge.copyWith( fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.grey900),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'You\'re all caught up! Check back later.',
-                    style: TextStyle(fontSize: 14, color: isDark ? Colors.white60 : AppColors.grey500),
+                    style: AppTypography.titleSmall.copyWith( color: isDark ? Colors.white60 : AppColors.grey500),
                   ),
                 ],
               ),
@@ -202,7 +203,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       child: Text(
                                         notification['title'],
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          AppTypography.titleSmall,
                                           fontWeight: notification['isRead'] ? FontWeight.w600 : FontWeight.w800,
                                           color: isDark ? Colors.white : AppColors.grey900,
                                         ),
@@ -223,7 +224,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 Text(
                                   notification['message'],
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    AppTypography.bodySmall,
                                     color: isDark ? Colors.white70 : AppColors.grey600,
                                   ),
                                   maxLines: 2,
@@ -233,7 +234,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                 Text(
                                   _formatTime(notification['timestamp']),
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    AppTypography.labelSmall,
                                     color: isDark ? Colors.white54 : AppColors.grey500,
                                   ),
                                 ),

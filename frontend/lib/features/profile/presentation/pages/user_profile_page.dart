@@ -1,36 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:farmcom/core/theme/app_typography.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmcom/features/auth/presentation/providers/auth_provider.dart';
 import 'package:farmcom/features/settings/presentation/pages/settings_page.dart';
-import 'package:farmcom/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:farmcom/core/theme/app_colors.dart';
 import 'package:farmcom/core/presentation/widgets/farmcom_card.dart';
-import 'package:farmcom/core/presentation/widgets/offline_indicator.dart';
+import 'edit_profile_page.dart';
 
-class UserProfilePage extends ConsumerStatefulWidget {
+class UserProfilePage extends ConsumerWidget {
   const UserProfilePage({super.key});
 
   @override
-  ConsumerState<UserProfilePage> createState() => _UserProfilePageState();
-}
-
-class _UserProfilePageState extends ConsumerState<UserProfilePage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          RefreshIndicator(
-            onRefresh: () async {
-              // Simulate data refresh
-              await Future.delayed(const Duration(seconds: 1));
-            },
-            color: AppColors.primary,
-            backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
-            child: CustomScrollView(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 200,
@@ -38,71 +25,70 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
             pinned: true,
             elevation: 0,
             stretch: true,
-            scrolledUnderElevation: isDark ? 4 : 2,
+            scrolledUnderElevation: 1,
             backgroundColor: isDark ? AppColors.darkSurfaceBright : Colors.white,
             centerTitle: true,
-            title: AnimatedOpacity(
-              opacity: 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                user?.name ?? 'Test Farmer',
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                  color: isDark ? Colors.white : AppColors.grey900,
-                ),
-              ),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              stretchModes: const [StretchMode.zoomBackground],
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.primaryDark, AppColors.primary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final top = constraints.biggest.height;
+                final isCollapsed = top < (MediaQuery.of(context).padding.top + 70);
+                final contentColor = isDark 
+                    ? Colors.white 
+                    : (isCollapsed ? AppColors.grey900 : Colors.white);
+
+                return FlexibleSpaceBar(
+                  stretchModes: const [StretchMode.zoomBackground],
+                  titlePadding: const EdgeInsets.only(bottom: 14),
+                  title: Text(
+                    user?.name ?? 'Test Farmer',
+                    style: AppTypography.titleLarge.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: contentColor,
+                    ),
                   ),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Positioned(
-                      bottom: 40,
-                      child: Column(
-                        children: [
-                          Container(
+                  background: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppColors.primaryDark, AppColors.primary],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned(
+                          bottom: 60,
+                          child: Container(
                             width: 80,
                             height: 80,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white,
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 4),
+                              color: isDark ? AppColors.darkSurfaceBright : Colors.white,
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: isDark ? 0.1 : 0.3), 
+                                width: 4,
+                              ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 5),
                                 ),
                               ],
                             ),
-                            child: const Icon(Icons.person_rounded, size: 40, color: AppColors.primary),
-                          ),
-                          const SizedBox(height: 12),
-                          // Subtitle in background
-                          Text(
-                            user?.phone ?? '+256 701 234 567',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white.withValues(alpha: 0.8),
-                              fontWeight: FontWeight.w600,
+                            child: Icon(
+                              Icons.person_rounded, 
+                              size: 40, 
+                              color: isDark ? Colors.white : AppColors.primary,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
             actions: [
               IconButton(
@@ -111,7 +97,11 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                     MaterialPageRoute(builder: (context) => const EditProfilePage()),
                   );
                 },
-                icon: const Icon(Icons.edit_note_rounded, color: Colors.white, size: 28),
+                icon: Icon(
+                  Icons.edit_note_rounded, 
+                  size: 28, 
+                  color: isDark ? Colors.white : null, // Uses theme color in light
+                ),
               ),
               const SizedBox(width: 8),
             ],
@@ -119,371 +109,196 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
           
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('About Me', isDark),
-                  const SizedBox(height: 12),
-                  FarmComCard(
-                    child: Column(
-                      children: [
-                        _buildProfileStaticItem(Icons.info_outline_rounded, 'Bio', user?.bio ?? 'Passionate about sustainable coffee farming.'),
-                        const Divider(height: 24),
-                        _buildProfileStaticItem(Icons.location_on_outlined, 'Region', user?.region ?? 'Central Uganda'),
-                      ],
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 24),
-                  _buildExpandableInterests(user?.interests ?? ['Coffee', 'Maize', 'Poultry'], isDark),
+                  // ============ Profile Details ============
+                  const _ProfileSectionTitle(title: 'Farm Information'),
+                  const SizedBox(height: 16),
+                  _buildInfoTile(context, Icons.location_on_rounded, 'Region', user?.region ?? 'Central Uganda'),
+                  _buildInfoTile(context, Icons.agriculture_rounded, 'Farm Size', '2.5 Acres'),
+                  _buildInfoTile(context, Icons.grass_rounded, 'Primary Crop', 'Robusta Coffee'),
                   
                   const SizedBox(height: 32),
-                  _buildSectionTitle('Performance & Engagement', isDark),
-                  const SizedBox(height: 12),
-                  _buildPerformanceMetrics(isDark),
-                  
-                  const SizedBox(height: 32),
-                  _buildSectionTitle('Account Settings', isDark),
-                  const SizedBox(height: 12),
+                  const _ProfileSectionTitle(title: 'Account Settings'),
+                  const SizedBox(height: 16),
                   FarmComCard(
                     padding: EdgeInsets.zero,
                     child: Column(
                       children: [
-                        _buildActionTile(
-                          icon: Icons.settings_outlined,
-                          title: 'App Preferences',
-                          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage())),
+                        _buildMenuAction(
+                          context, 
+                          Icons.settings_rounded, 
+                          'App Settings', 
+                          () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage())),
                         ),
-                        const Divider(height: 1),
-                        _buildActionTile(
-                          icon: Icons.help_outline_rounded,
-                          title: 'Help & Support',
-                          onTap: () {},
-                        ),
-                        const Divider(height: 1),
-                        _buildActionTile(
-                          icon: Icons.logout_rounded,
-                          title: 'Logout',
+                        Divider(height: 1, color: isDark ? Colors.white.withValues(alpha: 0.05) : null),
+                        _buildMenuAction(context, Icons.help_outline_rounded, 'Support & FAQ', () {}),
+                        Divider(height: 1, color: isDark ? Colors.white.withValues(alpha: 0.05) : null),
+                        _buildMenuAction(
+                          context, 
+                          Icons.logout_rounded, 
+                          'Log Out', 
+                          () {
+                            ref.read(authProvider.notifier).logout();
+                          },
                           isDestructive: true,
-                          onTap: _showLogoutDialog,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  
+                  const SizedBox(height: 32),
+                  const _ProfileSectionTitle(title: 'Farm Stats'),
+                  const SizedBox(height: 16),
+                  const Row(
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Consultations',
+                          value: '12',
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Forum Posts',
+                          value: '48',
+                          color: AppColors.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
           ),
         ],
       ),
-            ),
-            // Offline indicator
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: OfflineIndicator(),
-            ),
-          ],
-        ),
     );
   }
 
-  Widget _buildSectionTitle(String title, bool isDark) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w800,
-        color: isDark ? Colors.white : AppColors.grey900,
-        letterSpacing: 0.5,
-      ),
-    );
-  }
+  Widget _buildInfoTile(BuildContext context, IconData icon, String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-  Widget _buildExpandableInterests(List<String> interests, bool isDark) {
-    return FarmComCard(
-      padding: EdgeInsets.zero,
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: Text(
-            'Farming Interests',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : AppColors.grey900,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.primary.withValues(alpha: 0.15) : AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(10),
             ),
+            child: Icon(icon, color: isDark ? AppColors.primaryLight : AppColors.primary, size: 20),
           ),
-          leading: const Icon(Icons.favorite_outline_rounded, color: AppColors.primary),
-          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          expandedAlignment: Alignment.topLeft,
-          children: [
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: interests.map((interest) => _buildInterestChip(interest)).toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileStaticItem(IconData icon, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 20, color: AppColors.primary),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
+          const SizedBox(width: 16),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                label,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.grey500, letterSpacing: 0.5),
+                label, 
+                style: AppTypography.labelMedium.copyWith(color: isDark ? Colors.white60 : AppColors.grey500, 
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              const SizedBox(height: 4),
               Text(
-                value,
-                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                value, 
+                style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w800,
+                  color: isDark ? Colors.white : AppColors.grey900,
+                ),
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInterestChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.primarySoft,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700, fontSize: 13),
+        ],
       ),
     );
   }
 
-  Widget _buildActionTile({required IconData icon, required String title, required VoidCallback onTap, bool isDestructive = false}) {
-    final color = isDestructive ? AppColors.error : (Theme.of(context).brightness == Brightness.dark ? Colors.white : AppColors.grey900);
+  Widget _buildMenuAction(BuildContext context, IconData icon, String title, VoidCallback onTap, {bool isDestructive = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListTile(
       onTap: onTap,
-      leading: Icon(icon, color: color, size: 22),
+      leading: Icon(
+        icon, 
+        color: isDestructive 
+            ? AppColors.error 
+            : (isDark ? Colors.white70 : AppColors.grey700),
+      ),
       title: Text(
         title,
-        style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 15),
+        style: AppTypography.titleLarge.copyWith(
+          fontWeight: FontWeight.w700,
+          color: isDestructive 
+              ? AppColors.error 
+              : (isDark ? Colors.white : AppColors.grey900),
+        ),
       ),
       trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.grey300),
     );
   }
+}
 
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w900)),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.grey500, fontWeight: FontWeight.w700)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ref.read(authProvider.notifier).logout();
-            },
-            child: const Text('Logout', style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w900)),
-          ),
-        ],
+class _ProfileSectionTitle extends StatelessWidget {
+  final String title;
+  const _ProfileSectionTitle({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Text(
+      title,
+      style: AppTypography.titleLarge.copyWith(
+        
+        fontWeight: FontWeight.w900,
+        letterSpacing: 0.3,
+        color: isDark ? Colors.white : AppColors.grey900,
       ),
     );
   }
+}
 
-  Widget _buildPerformanceMetrics(bool isDark) {
-    // Mock performance data - will be replaced with real data from backend
-    final metrics = [
-      {
-        'title': 'Total Posts',
-        'value': '24',
-        'icon': Icons.article_rounded,
-        'color': AppColors.primary,
-        'subtitle': 'Shared insights'
-      },
-      {
-        'title': 'Engagement Rate',
-        'value': '8.5%',
-        'icon': Icons.trending_up_rounded,
-        'color': AppColors.success,
-        'subtitle': 'This week'
-      },
-      {
-        'title': 'Community Score',
-        'value': '92',
-        'icon': Icons.star_rounded,
-        'color': AppColors.warning,
-        'subtitle': '/100'
-      },
-      {
-        'title': 'Followers',
-        'value': '156',
-        'icon': Icons.people_rounded,
-        'color': AppColors.tertiary,
-        'subtitle': 'Community members'
-      },
-    ];
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
 
-    return Column(
-      children: [
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          children: List.generate(
-            metrics.length,
-            (index) {
-              final metric = metrics[index];
-              return FarmComCard(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: (metric['color'] as Color).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        metric['icon'] as IconData,
-                        color: metric['color'] as Color,
-                        size: 20,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      metric['value'] as String,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: isDark ? Colors.white : AppColors.grey900,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      metric['title'] as String,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white70 : AppColors.grey600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      metric['subtitle'] as String,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: isDark ? Colors.white54 : AppColors.grey500,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-        FarmComCard(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.insights_rounded, color: AppColors.primary, size: 20),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Activity Overview',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : AppColors.grey900,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildActivityStat('Posts This Month', '8', '↑ 2 from last month', AppColors.primary, isDark),
-              const SizedBox(height: 12),
-              _buildActivityStat('Community Interactions', '34', '↑ Active in 5 communities', AppColors.success, isDark),
-              const SizedBox(height: 12),
-              _buildActivityStat('Diagnostics Used', '3', 'Last used: 2 days ago', AppColors.tertiary, isDark),
-              const SizedBox(height: 12),
-              _buildActivityStat('Helpful Answers', '12', 'Upvoted by community', AppColors.warning, isDark),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
-  Widget _buildActivityStat(String label, String value, String detail, Color color, bool isDark) {
-    return Row(
-      children: [
-        Container(
-          width: 4,
-          height: 20,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return FarmComCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTypography.labelMedium.copyWith(color: isDark ? Colors.white60 : AppColors.grey500,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white : AppColors.grey900,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                detail,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isDark ? Colors.white54 : AppColors.grey500,
-                ),
-              ),
-            ],
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: AppTypography.titleLarge.copyWith(
+              
+              fontWeight: FontWeight.w900,
+              color: color,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            color: color,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -2,7 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that monitors the device's connectivity status.
-/// Note: connectivity_plus 5.x returns a single ConnectivityResult, not a List.
+/// Consolidates connectivity logic into a single place.
+
 final connectivityProvider = StreamProvider<ConnectivityResult>((ref) {
   return Connectivity().onConnectivityChanged;
 });
