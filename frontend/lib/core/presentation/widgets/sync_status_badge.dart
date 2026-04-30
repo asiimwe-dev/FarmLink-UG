@@ -90,9 +90,9 @@ class SyncStatusBadge extends StatelessWidget {
   (Color, IconData, String) _getConfig() {
     switch (status) {
       case SyncStatus.synced:
-        return (AppColors.success, Icons.cloud_done, AppStrings.cloudSynced);
+        return (AppColors.success, Icons.cloud_done, 'Synced');
       case SyncStatus.pending:
-        return (AppColors.warning, Icons.cloud_upload_outlined, AppStrings.cloudPending);
+        return (AppColors.warning, Icons.cloud_upload_outlined, 'Pending sync');
       case SyncStatus.syncing:
         return (AppColors.info, Icons.cloud_sync, AppStrings.syncing);
       case SyncStatus.failed:

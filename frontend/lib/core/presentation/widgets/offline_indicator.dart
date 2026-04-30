@@ -56,8 +56,8 @@ class OfflineIndicator extends ConsumerWidget {
   }
 }
 
-class SyncStatusIndicator extends ConsumerWidget {
-  const SyncStatusIndicator({super.key});
+class SyncStatusPlaceholder extends ConsumerWidget {
+  const SyncStatusPlaceholder({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -15,6 +15,18 @@ export 'custom_app_bar.dart';
 
 // Accessibility Helpers
 export 'accessibility_helpers.dart';
+export 'accessibility_widgets.dart';
+
+// Trust & Verification Widgets
+export 'verification_badge.dart';
+export 'sync_status_badge.dart';
+
+// Community & Niche Widgets
+export 'niche_icons.dart';
+
+// Error Recovery & Performance
+export 'error_recovery_widgets.dart';
+export 'performance_widgets.dart';
 
 // Existing Widgets (for reference)
 // export 'app_drawer.dart';
