@@ -1,7 +1,7 @@
 part of '../pages/dashboard_page.dart';
 
 class AIQuickScanButton extends ConsumerWidget {
-  const AIQuickScanButton({super.key}) : super();
+  const AIQuickScanButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -9,7 +9,6 @@ class AIQuickScanButton extends ConsumerWidget {
       padding: EdgeInsets.zero,
       color: AppColors.primary,
       onTap: () {
-        // Navigate to diagnose tab
         context.go(AppRoutes.diagnostics);
       },
       child: Container(

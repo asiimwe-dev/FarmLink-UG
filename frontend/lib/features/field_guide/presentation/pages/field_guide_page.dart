@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_card.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_button.dart';
 import 'package:farmlink_ug/core/presentation/widgets/offline_indicator.dart';
@@ -28,7 +30,7 @@ class FieldGuidePage extends ConsumerWidget {
               child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             SliverAppBar(
-              expandedHeight: 120,
+              expandedHeight: 100,
               floating: false,
               pinned: true,
               elevation: 0,
@@ -183,12 +185,12 @@ class _LearningCenter extends StatelessWidget {
     ];
 
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(SpacingConstants.paddingLG),
       itemCount: guides.length,
       itemBuilder: (context, index) {
         final guide = guides[index] as Map<String, dynamic>;
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: SpacingConstants.paddingMD),
           child: FarmLinkCard(
             onTap: () {},
             child: Row(
@@ -234,12 +236,12 @@ class _ExpertAccess extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(SpacingConstants.paddingLG),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(SpacingConstants.paddingXXL),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [AppColors.tertiary, AppColors.tertiaryDark],
@@ -261,7 +263,7 @@ class _ExpertAccess extends StatelessWidget {
                 const Row(
                   children: [
                     Icon(Icons.verified_rounded, color: Colors.white, size: 28),
-                    SizedBox(width: 12),
+                    SizedBox(width: SpacingConstants.paddingMD),
                     Text(
                       'Direct Expert Access',
                       style: TextStyle(
@@ -285,16 +287,12 @@ class _ExpertAccess extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 32),
-          Text(
-            'How it works',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : AppColors.grey900,
-            ),
+          const SizedBox(height: SpacingConstants.xxxl),
+          UIRefinementKit.buildSectionHeader(
+            context: context,
+            title: 'How it works',
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: SpacingConstants.paddingXL),
           _StepItem(
             number: '1',
             title: 'Describe Your Issue',
@@ -302,7 +300,7 @@ class _ExpertAccess extends StatelessWidget {
             icon: Icons.edit_note_rounded,
             isDark: isDark,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: SpacingConstants.paddingXL),
           _StepItem(
             number: '2',
             title: 'Expert Review',
@@ -310,7 +308,7 @@ class _ExpertAccess extends StatelessWidget {
             icon: Icons.rate_review_rounded,
             isDark: isDark,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: SpacingConstants.paddingXL),
           _StepItem(
             number: '3',
             title: 'Get Prescription',
@@ -318,13 +316,13 @@ class _ExpertAccess extends StatelessWidget {
             icon: Icons.receipt_long_rounded,
             isDark: isDark,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: SpacingConstants.xxxxl),
           FarmLinkButton(
             label: 'Request Expert Access',
             onPressed: () {},
             icon: Icons.support_agent_rounded,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: SpacingConstants.paddingXXL),
           FarmLinkCard(
             color: AppColors.tertiarySoft.withValues(alpha: 0.5),
             border: Border.all(color: AppColors.tertiary.withValues(alpha: 0.2)),

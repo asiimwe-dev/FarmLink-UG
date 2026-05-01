@@ -4,6 +4,8 @@ import 'package:farmlink_ug/features/auth/presentation/providers/auth_provider.d
 import 'package:farmlink_ug/features/settings/presentation/pages/settings_page.dart';
 import 'package:farmlink_ug/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_card.dart';
 import 'package:farmlink_ug/core/presentation/widgets/offline_indicator.dart';
 
@@ -33,7 +35,7 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
             child: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 110,
             floating: false,
             pinned: true,
             elevation: 0,
@@ -41,18 +43,7 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
             scrolledUnderElevation: isDark ? 4 : 2,
             backgroundColor: isDark ? AppColors.darkSurfaceBright : Colors.white,
             centerTitle: true,
-            title: AnimatedOpacity(
-              opacity: 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                user?.name ?? 'Test Farmer',
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                  color: isDark ? Colors.white : AppColors.grey900,
-                ),
-              ),
-            ),
+            title: const SizedBox.shrink(), // Empty - profile info is in header
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: const [StretchMode.zoomBackground],
               background: Container(
@@ -67,16 +58,17 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                   alignment: Alignment.center,
                   children: [
                     Positioned(
-                      bottom: 40,
-                      child: Column(
+                      left: 20,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            width: 80,
-                            height: 80,
+                            width: 70,
+                            height: 70,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 4),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 3),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.1),
@@ -85,17 +77,36 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                                 ),
                               ],
                             ),
-                            child: const Icon(Icons.person_rounded, size: 40, color: AppColors.primary),
+                            child: const Icon(Icons.person_rounded, size: 36, color: AppColors.primary),
                           ),
-                          const SizedBox(height: 12),
-                          // Subtitle in background
-                          Text(
-                            user?.phone ?? '+256 701 234 567',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white.withValues(alpha: 0.8),
-                              fontWeight: FontWeight.w600,
-                            ),
+                          const SizedBox(width: 16),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: Text(
+                                  user?.name ?? 'Test Farmer',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                user?.phone ?? '+256 701 234 567',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -119,33 +130,33 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
           
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(SpacingConstants.paddingLG),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionTitle('About Me', isDark),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: SpacingConstants.paddingMD),
                   FarmLinkCard(
                     child: Column(
                       children: [
                         _buildProfileStaticItem(Icons.info_outline_rounded, 'Bio', user?.bio ?? 'Passionate about sustainable coffee farming.'),
-                        const Divider(height: 24),
+                        const Divider(height: SpacingConstants.xxl),
                         _buildProfileStaticItem(Icons.location_on_outlined, 'Region', user?.region ?? 'Central Uganda'),
                       ],
                     ),
                   ),
                   
-                  const SizedBox(height: 24),
+                  const SizedBox(height: SpacingConstants.xxl),
                   _buildExpandableInterests(user?.interests ?? ['Coffee', 'Maize', 'Poultry'], isDark),
                   
-                  const SizedBox(height: 32),
+                  const SizedBox(height: SpacingConstants.xxxl),
                   _buildSectionTitle('Performance & Engagement', isDark),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: SpacingConstants.paddingMD),
                   _buildPerformanceMetrics(isDark),
                   
-                  const SizedBox(height: 32),
+                  const SizedBox(height: SpacingConstants.xxxl),
                   _buildSectionTitle('Account Settings', isDark),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: SpacingConstants.paddingMD),
                   FarmLinkCard(
                     padding: EdgeInsets.zero,
                     child: Column(

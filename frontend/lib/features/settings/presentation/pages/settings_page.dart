@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
 import 'package:farmlink_ug/core/theme/theme_provider.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_card.dart';
+import 'package:farmlink_ug/core/presentation/widgets/offline_indicator.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -26,15 +29,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('App Preferences', style: TextStyle(fontWeight: FontWeight.w900)),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-        ),
+      appBar: UIRefinementKit.buildGradientAppBar(
+        context: context,
+        title: 'App Preferences',
+        showLeading: true,
+        onLeadingPressed: () => Navigator.pop(context),
       ),
-      body: ListView(
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(seconds: 1));
+            },
+            color: AppColors.primary,
+            child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           _buildSectionTitle('Appearance', isDark),
@@ -191,6 +199,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
           ),
         ],
+            ),
+          ),
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: OfflineIndicator(),
+          ),
+        ],
       ),
     );
   }
@@ -295,60 +312,71 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
-      appBar: AppBar(
-        title: const Text('About FarmLink UG', style: TextStyle(fontWeight: FontWeight.w900)),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-        ),
+      appBar: UIRefinementKit.buildGradientAppBar(
+        context: context,
+        title: 'About FarmLink UG',
+        showLeading: true,
+        onLeadingPressed: () => Navigator.pop(context),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppColors.primarySoft,
-                borderRadius: BorderRadius.circular(24),
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(const Duration(seconds: 1));
+            },
+            color: AppColors.primary,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: AppColors.primarySoft,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: const Icon(Icons.eco_rounded, size: 64, color: AppColors.primary),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'FarmLink UG',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.primary),
+                  ),
+                  Text(
+                    'Version 1.0.0',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    'FarmLink UG is a production-grade AgTech platform designed to bridge the rural agriculture extension gap in East Africa. Our mission is to empower smallholder farmers with AI-driven diagnostics, community-based knowledge sharing, and real-time market insights.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, height: 1.6, fontWeight: FontWeight.w500, color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 48),
+                  _buildFeatureInfo(Icons.auto_awesome_rounded, 'AI Diagnostics', 'Identify crop and animal diseases instantly using your camera.'),
+                  const SizedBox(height: 24),
+                  _buildFeatureInfo(Icons.groups_rounded, 'Community Knowledge', 'Connect with niche farming communities and verified experts.'),
+                  const SizedBox(height: 24),
+                  _buildFeatureInfo(Icons.bar_chart_rounded, 'Market Pulse', 'Access real-time price trends for local agricultural products.'),
+                  const SizedBox(height: 60),
+                  const Divider(),
+                  const SizedBox(height: 20),
+                  Text(
+                    '© 2026 FarmLink UG Technologies',
+                    style: TextStyle(fontSize: 12, color: AppColors.grey400, fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.eco_rounded, size: 64, color: AppColors.primary),
             ),
-            const SizedBox(height: 24),
-            const Text(
-              'FarmLink UG',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.primary),
-            ),
-            Text(
-              'Version 1.0.0',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white60 : AppColors.grey500),
-            ),
-            const SizedBox(height: 40),
-            Text(
-              'FarmLink UG is a production-grade AgTech platform designed to bridge the rural agriculture extension gap in East Africa. Our mission is to empower smallholder farmers with AI-driven diagnostics, community-based knowledge sharing, and real-time market insights.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, height: 1.6, fontWeight: FontWeight.w500, color: isDark ? Colors.white70 : AppColors.grey800),
-            ),
-            const SizedBox(height: 48),
-            _buildFeatureInfo(Icons.auto_awesome_rounded, 'AI Diagnostics', 'Identify crop and animal diseases instantly using your camera.'),
-            const SizedBox(height: 24),
-            _buildFeatureInfo(Icons.groups_rounded, 'Community Knowledge', 'Connect with niche farming communities and verified experts.'),
-            const SizedBox(height: 24),
-            _buildFeatureInfo(Icons.bar_chart_rounded, 'Market Pulse', 'Access real-time price trends for local agricultural products.'),
-            const SizedBox(height: 60),
-            const Divider(),
-            const SizedBox(height: 20),
-            Text(
-              '© 2026 FarmLink UG Technologies',
-              style: TextStyle(fontSize: 12, color: AppColors.grey400, fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
+          ),
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: OfflineIndicator(),
+          ),
+        ],
       ),
     );
   }

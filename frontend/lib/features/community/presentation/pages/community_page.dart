@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_card.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_text_field.dart';
 import 'package:farmlink_ug/core/presentation/widgets/offline_indicator.dart';
@@ -26,7 +28,7 @@ class CommunityPage extends ConsumerWidget {
             child: CustomScrollView(
               slivers: [
           SliverAppBar(
-            expandedHeight: 140,
+            expandedHeight: 100,
             floating: false,
             pinned: true,
             elevation: 0,
@@ -58,7 +60,7 @@ class CommunityPage extends ConsumerWidget {
           
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(SpacingConstants.paddingLG),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -66,18 +68,17 @@ class CommunityPage extends ConsumerWidget {
                     hintText: 'Search communities (e.g. Coffee, Poultry)',
                     prefixIcon: Icon(Icons.search_rounded, color: AppColors.primary),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: SpacingConstants.xxxl),
                   
                   // ============ My Communities ============
-                  Text(
-                    'My Communities',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : AppColors.grey900,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.paddingMD),
+                    child: UIRefinementKit.buildSectionHeader(
+                      context: context,
+                      title: 'My Communities',
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: SpacingConstants.paddingLG),
                   _ForumTile(
                     title: 'Coffee Farmers Uganda',
                     members: '1.2k',
@@ -119,18 +120,17 @@ class CommunityPage extends ConsumerWidget {
                     },
                   ),
                   
-                  const SizedBox(height: 32),
+                  const SizedBox(height: SpacingConstants.xxxl),
                   
                   // ============ Recommended for you ============
-                  Text(
-                    'Recommended for you',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : AppColors.grey900,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.paddingMD),
+                    child: UIRefinementKit.buildSectionHeader(
+                      context: context,
+                      title: 'Recommended for you',
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: SpacingConstants.paddingLG),
                   _ForumTile(
                     title: 'Maize Growers Network',
                     members: '850',
@@ -162,18 +162,17 @@ class CommunityPage extends ConsumerWidget {
                     onTap: () {},
                   ),
                   
-                  const SizedBox(height: 32),
+                  const SizedBox(height: SpacingConstants.xxxl),
                   
                   // ============ Trending ============
-                  Text(
-                    'Trending Communities',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : AppColors.grey900,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.paddingMD),
+                    child: UIRefinementKit.buildSectionHeader(
+                      context: context,
+                      title: 'Trending Communities',
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: SpacingConstants.paddingLG),
                   _ForumTile(
                     title: 'Fish Farming Collective',
                     members: '680',
@@ -213,7 +212,7 @@ class CommunityPage extends ConsumerWidget {
           ),
           ),
           // Offline indicator
-          const Positioned(
+          Positioned(
             top: 0,
             left: 0,
             right: 0,

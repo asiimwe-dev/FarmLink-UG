@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:farmlink_ug/core/infrastructure/connectivity/connectivity_provider.dart';
-import 'package:farmlink_ug/features/diagnostics/presentation/pages/camera_diagnostic_page.dart';
 import 'package:farmlink_ug/features/ai_chat/presentation/pages/ai_chat_page.dart';
 import 'package:farmlink_ug/features/community/presentation/pages/community_chat_page.dart';
+import 'package:farmlink_ug/core/utils/time_greeting_helper.dart';
 import 'package:farmlink_ug/features/auth/presentation/providers/auth_provider.dart';
 import 'package:farmlink_ug/core/routing/app_routes.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
 import 'package:farmlink_ug/core/theme/app_typography.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_card.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_button.dart';
 import 'package:farmlink_ug/core/presentation/widgets/offline_indicator.dart';
+import '../widgets/personalized_greeting_header.dart';
 
 part '../widgets/niche_communities_list.dart';
 part '../widgets/ai_quick_scan_button.dart';
@@ -40,7 +43,7 @@ class DashboardPage extends ConsumerWidget {
               slivers: [
           // ============ Modern Header with Gradient ============
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 140,
             floating: false,
             pinned: true,
             elevation: 0,
@@ -105,29 +108,16 @@ class DashboardPage extends ConsumerWidget {
                         color: Colors.white.withValues(alpha: 0.06),
                       ),
                     ),
-                    SafeArea(
+                    Align(
+                      alignment: Alignment.bottomLeft,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 60, 24, 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Spacer(),
-                            Text(
-                              'Hello, $userName!',
-                              style: AppTypography.headlineMedium.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Your farm is doing great today',
-                              style: AppTypography.bodyMedium.copyWith(
-                                color: Colors.white.withValues(alpha: 0.85),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                        padding: const EdgeInsets.only(left: 24, bottom: 20),
+                        child: Text(
+                          'Welcome back,\nlet\'s grow together',
+                          style: AppTypography.titleMedium.copyWith(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            height: 1.3,
+                          ),
                         ),
                       ),
                     ),
@@ -139,123 +129,42 @@ class DashboardPage extends ConsumerWidget {
 
           // ============ Communities Section ============
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'My Communities',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.textPrimary,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondarySoft,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          '3 Active',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.secondaryDark,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () {
-                      context.go(AppRoutes.community);
-                    },
-                    child: Row(
-                      children: [
-                        const Text('View All'),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 16,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            child: UIRefinementKit.buildSectionHeader(
+              context: context,
+              title: 'My Communities',
+              subtitle: '3 Active',
+              onViewAll: () => context.go(AppRoutes.community),
+              viewAllLabel: 'View All',
             ),
           ),
 
           const SliverToBoxAdapter(
             child: SizedBox(
               height: 200,
-              child: NicheCommunitiesList(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: SpacingConstants.paddingLG),
+                child: NicheCommunitiesList(),
+              ),
             ),
           ),
 
           // ============ Quick Scan CTA ============
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: EdgeInsets.symmetric(
+                horizontal: SpacingConstants.paddingLG,
+                vertical: SpacingConstants.paddingXL,
+              ),
               child: AIQuickScanButton(),
             ),
           ),
 
           // ============ Market Pulse Section ============
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Market Pulse',
-                        style: AppTypography.titleLarge.copyWith(
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.textPrimary,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondarySoft,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'Live Updates',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.secondaryDark,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            child: UIRefinementKit.buildSectionHeader(
+              context: context,
+              title: 'Market Pulse',
+              subtitle: 'Live Updates',
             ),
           ),
 
@@ -263,32 +172,24 @@ class DashboardPage extends ConsumerWidget {
 
           // ============ Professional Help Section ============
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 28, 20, 12),
-              child: Text(
-                'Professional Help',
-                style: AppTypography.titleLarge.copyWith(
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.textPrimary,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+            child: UIRefinementKit.buildSectionHeader(
+              context: context,
+              title: 'Professional Help',
             ),
           ),
 
           const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(SpacingConstants.paddingLG),
               child: _ExpertAccessCard(),
             ),
           ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          const SliverToBoxAdapter(child: SizedBox(height: SpacingConstants.xxxxl)),
             ],
             ),
             // Offline indicator
-            const Positioned(
+            Positioned(
               top: 0,
               left: 0,
               right: 0,
@@ -330,14 +231,14 @@ class DashboardPage extends ConsumerWidget {
           child: const Icon(
             Icons.eco_rounded,
             color: Colors.white,
-            size: 18,
+            size: 20,
           ),
         ),
         const SizedBox(width: 10),
         const Text(
           'FarmLink UG',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 22,
             fontWeight: FontWeight.w900,
             color: Colors.white,
             letterSpacing: 0.5,

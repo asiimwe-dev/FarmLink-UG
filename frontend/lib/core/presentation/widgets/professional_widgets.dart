@@ -28,6 +28,9 @@ export 'niche_icons.dart';
 export 'error_recovery_widgets.dart';
 export 'performance_widgets.dart';
 
+// UI Refinement Kit (professional components for all pages)
+export 'ui_refinement_kit.dart';
+
 // Existing Widgets (for reference)
 // export 'app_drawer.dart';
 // export 'empty_state.dart';

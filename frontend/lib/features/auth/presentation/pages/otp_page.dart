@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmlink_ug/core/constants/app_strings.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_button.dart';
 import 'package:farmlink_ug/core/presentation/widgets/farmlink_text_field.dart';
 import '../providers/auth_provider.dart';
@@ -115,13 +117,13 @@ class _OTPPageState extends ConsumerState<OTPPage> {
 
   Widget _buildPhonePage(BuildContext context, AuthState authState) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(SpacingConstants.paddingXXL),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 60),
+          const SizedBox(height: SpacingConstants.xxxxl),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(SpacingConstants.paddingLG),
             decoration: BoxDecoration(
               color: AppColors.primarySoft,
               borderRadius: BorderRadius.circular(20),
@@ -132,7 +134,7 @@ class _OTPPageState extends ConsumerState<OTPPage> {
               color: AppColors.primary,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: SpacingConstants.xxxl),
           Text(
             'Welcome to FarmLink UG',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -140,7 +142,7 @@ class _OTPPageState extends ConsumerState<OTPPage> {
                   color: AppColors.grey900,
                 ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: SpacingConstants.paddingMD),
           Text(
             'Empowering farmers through community and technology.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -148,7 +150,7 @@ class _OTPPageState extends ConsumerState<OTPPage> {
                   height: 1.5,
                 ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: SpacingConstants.xxxxl),
           FarmLinkTextField(
             controller: phoneController,
             labelText: AppStrings.enterPhone,
@@ -157,13 +159,13 @@ class _OTPPageState extends ConsumerState<OTPPage> {
             keyboardType: TextInputType.phone,
             enabled: !authState.isLoading,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: SpacingConstants.xxxl),
           FarmLinkButton(
             label: AppStrings.sendOTP,
             onPressed: _sendOTP,
             isLoading: authState.isLoading,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: SpacingConstants.xxl),
           Center(
             child: Text(
               'By continuing, you agree to our Terms and Conditions',

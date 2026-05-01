@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:farmlink_ug/core/theme/app_colors.dart';
-import 'package:farmlink_ug/core/presentation/widgets/farmlink_card.dart';
+import 'package:farmlink_ug/core/theme/spacing_constants.dart';
+import 'package:farmlink_ug/core/presentation/widgets/ui_refinement_kit.dart';
 import 'package:farmlink_ug/core/presentation/widgets/modern_chat_bubble.dart';
 import 'package:farmlink_ug/core/presentation/widgets/modern_chat_input.dart';
+import 'package:farmlink_ug/core/presentation/widgets/offline_indicator.dart';
 
 class AIChatPage extends ConsumerStatefulWidget {
   const AIChatPage({super.key});
@@ -91,80 +93,48 @@ class _AIChatPageState extends ConsumerState<AIChatPage> {
     
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF121212) : AppColors.grey50,
-      appBar: AppBar(
-        titleSpacing: 0,
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primarySoft,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.smart_toy_rounded, color: AppColors.primary, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'AI Assistant',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: isDark ? Colors.white : AppColors.grey900),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: const BoxDecoration(
-                        color: Colors.greenAccent,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Always active',
-                      style: TextStyle(fontSize: 10, color: isDark ? Colors.white60 : AppColors.grey500, fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+      appBar: UIRefinementKit.buildGradientAppBar(
+        context: context,
+        title: 'AI Assistant',
+        showLeading: true,
+        onLeadingPressed: () => Navigator.of(context).pop(),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(20),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return AIChatBubble(
-                  text: message.text,
-                  isUser: message.isUser,
-                  timestamp: message.timestamp,
-                );
-              },
-            ),
+          Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(SpacingConstants.paddingLG),
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    return AIChatBubble(
+                      text: message.text,
+                      isUser: message.isUser,
+                      timestamp: message.timestamp,
+                    );
+                  },
+                ),
+              ),
+              ModernChatInputArea(
+                controller: _messageController,
+                onSend: _sendMessage,
+                onMic: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Voice message feature coming soon!')),
+                  );
+                },
+                hintText: 'Ask me anything...',
+              ),
+            ],
           ),
-          ModernChatInputArea(
-            controller: _messageController,
-            onSend: _sendMessage,
-            onMic: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Voice message feature coming soon!')),
-              );
-            },
-            hintText: 'Ask me anything...',
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: OfflineIndicator(),
           ),
         ],
       ),
